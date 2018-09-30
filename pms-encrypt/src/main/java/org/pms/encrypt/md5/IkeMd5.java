@@ -6,9 +6,9 @@ import java.security.NoSuchAlgorithmException;
 
 public class IkeMd5 {
 	
-	public static final String KEY_MD5 = "MD5";
+	private static final String KEY_MD5 = "MD5";
 	
-	public static String getMd5(String src) {
+	private static String getMd5(String src) {
 		BigInteger big = null;
 		
 		try {
