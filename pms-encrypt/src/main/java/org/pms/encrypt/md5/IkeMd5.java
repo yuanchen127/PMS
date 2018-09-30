@@ -8,7 +8,7 @@ public class IkeMd5 {
 	
 	private static final String KEY_MD5 = "MD5";
 	
-	private static String getMd5(String src) {
+	public String getMd5(String src) {
 		BigInteger big = null;
 		
 		try {

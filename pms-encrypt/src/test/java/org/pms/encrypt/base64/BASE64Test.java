@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import junit.framework.TestCase;
 
-public class BASE64Test extends TestCase {
+public class BASE64Test {
 	
 	@Test
 	public void test() {
