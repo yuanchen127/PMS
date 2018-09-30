@@ -11,7 +11,7 @@ import java.util.Base64;
 public class IkeBase64 {
 	/**
 	 * 使用base64加密字符串
-	 * @param stringSource
+	 * @param src
 	 * @return
 	 */
 	public String encrypt(String src) {
@@ -22,7 +22,7 @@ public class IkeBase64 {
 	
 	/**
 	 * 解密base64密码
-	 * @param codeString
+	 * @param code
 	 * @return
 	 */
 	public String decrypt(String code) {
