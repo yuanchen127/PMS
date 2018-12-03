@@ -218,30 +218,30 @@ public class OnlineSolution {
     }
     
     static class MyQueue {
-		private Stack<Integer> source = new Stack<Integer>();
-		private Stack<Integer> target = new Stack<Integer>();
+	private Stack<Integer> source = new Stack<Integer>();
+	private Stack<Integer> target = new Stack<Integer>();
 
-		void push(Integer n) {
-			source.push(n);
-		}
-
-		int pop() throws MyException {
-			if (source.isEmpty() && target.isEmpty()) {
-				throw new MyException("queue is empty");
-			}
-			if (target.isEmpty()) {
-				while (!source.isEmpty()) {
-					target.push(source.pop());
-				}
-			}
-			return target.pop();
-		}
+	void push(Integer n) {
+		source.push(n);
 	}
 
-	static class MyException extends Exception {
-		MyException(String msg) {
-			super(msg);
+	int pop() throws MyException {
+		if (source.isEmpty() && target.isEmpty()) {
+			throw new MyException("queue is empty");
 		}
+		if (target.isEmpty()) {
+			while (!source.isEmpty()) {
+				target.push(source.pop());
+			}
+		}
+		return target.pop();
 	}
+    }
+
+    static class MyException extends Exception {
+	MyException(String msg) {
+		super(msg);
+	}
+    }
 
 }
