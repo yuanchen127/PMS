@@ -216,5 +216,32 @@ public class OnlineSolution {
             this.val = val;
         }
     }
+    
+    static class MyQueue {
+		private Stack<Integer> source = new Stack<Integer>();
+		private Stack<Integer> target = new Stack<Integer>();
+
+		void push(Integer n) {
+			source.push(n);
+		}
+
+		int pop() throws MyException {
+			if (source.isEmpty() && target.isEmpty()) {
+				throw new MyException("queue is empty");
+			}
+			if (target.isEmpty()) {
+				while (!source.isEmpty()) {
+					target.push(source.pop());
+				}
+			}
+			return target.pop();
+		}
+	}
+
+	static class MyException extends Exception {
+		MyException(String msg) {
+			super(msg);
+		}
+	}
 
 }
