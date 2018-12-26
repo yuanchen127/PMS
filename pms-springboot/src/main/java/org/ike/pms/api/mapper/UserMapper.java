@@ -1,9 +1,12 @@
 package org.ike.pms.api.mapper;
 
 import org.ike.pms.api.entity.User;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface UserMapper {
     int deleteByPrimaryKey(Integer userId);
 
@@ -17,5 +20,5 @@ public interface UserMapper {
 
     int updateByPrimaryKey(User record);
 
-    List<User> selectAllUser(); //这个方式我自己加的
+    List<User> selectAllUser();
 }
