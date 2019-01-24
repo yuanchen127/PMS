@@ -2,6 +2,7 @@ package org.pms.javabase.niuke;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Stack;
 
 public class OnlineSolution {
     static ArrayList<Integer> list = new ArrayList<Integer>();

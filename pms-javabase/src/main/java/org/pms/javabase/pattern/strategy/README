@@ -1,0 +1,1 @@
+策略模式的经典案例：TreeSet(Comparator<? super E> comparator)
