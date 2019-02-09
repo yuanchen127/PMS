@@ -5,7 +5,7 @@ import java.util.Random;
 import java.util.Stack;
 
 public class OnlineSolution {
-    static ArrayList<Integer> list = new ArrayList<Integer>();
+    static ArrayList<Integer> list = new ArrayList<>();
     public static void main(String args[]) {
         int[] array = new int[10];
         for (int i = 0; i < array.length; i++) {
@@ -13,7 +13,6 @@ public class OnlineSolution {
         }
         System.out.println(printArray(array));
         System.out.println(printArray(reOrderArray(array)));
-        ;
     }
 
 
