@@ -1,4 +1,4 @@
-package org.ike.pms.api.essay;
+package org.pms.javabase.essay;
 
 import ch.ethz.ssh2.Connection;
 import ch.ethz.ssh2.Session;

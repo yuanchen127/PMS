@@ -7,6 +7,10 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.lang.reflect.Proxy;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
 /**
  * Unit test for simple App.
  */
@@ -39,5 +43,9 @@ public class AppTest extends TestCase {
 		int a=1;
 		int b=2;
 		System.out.println(a|b);
+		Arrays.asList(new int[]{1,2,3});
+		new ArrayList<>().iterator();
+        new Date();
+
 	}
 }
