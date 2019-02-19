@@ -1,4 +1,4 @@
-package org.ike.pms.api.freemarker;
+package org.pms.javabase.freemarker;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -19,14 +19,14 @@ public class FreemarkerHandler {
     public static void autoGenerator() throws IOException {
         // 参数值
         Map<String, Object> map = new HashMap<String, Object>();
-        Base base = new Base("String", "name");
+        org.ike.pms.api.freemarker.Base base = new org.ike.pms.api.freemarker.Base("String", "name");
         map.put("info", base);
 //        map.put("type", "String");
 //        map.put("name", "testName");
         map.put("package", "org.ike.pms.api.freemarker");
         /** 使用clazz */
-        Clazz clazz = new Clazz();
-        Clazz.packageName = "org.ike.pms.api.freemarker";
+        org.ike.pms.api.freemarker.Clazz clazz = new org.ike.pms.api.freemarker.Clazz();
+        org.ike.pms.api.freemarker.Clazz.packageName = "org.ike.pms.api.freemarker";
         clazz.addField("String", "name");
         /** end */
         // 模板目录
@@ -41,7 +41,7 @@ public class FreemarkerHandler {
         String fileName = "Ntest.java";
 
         map.put("class", fileName.split("\\.")[0]);
-        Clazz.className = fileName.split("\\.")[0];
+        org.ike.pms.api.freemarker.Clazz.className = fileName.split("\\.")[0];
 //        map.put("class", fileName);
         // 创建文件夹
         new File(targetPath).mkdirs();
