@@ -1,4 +1,4 @@
-package org.ike.pms.api.freemarker;
+package org.pms.javabase.freemarker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,9 +6,9 @@ import java.util.List;
 public class Clazz {
     public static String packageName;
     public static String className;
-    List<Base> baseList = new ArrayList<>(1);
+    List<org.ike.pms.api.freemarker.Base> baseList = new ArrayList<>(1);
 
     public void addField(String type, String name) {
-        baseList.add(new Base(type, name));
+        baseList.add(new org.ike.pms.api.freemarker.Base(type, name));
     }
 }
