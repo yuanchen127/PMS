@@ -2,14 +2,12 @@ package org.ike.pms.pmsfilesystem.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.ike.pms.pmsfilesystem.common.FileUtil;
+import org.ike.pms.pmsfilesystem.entity.CopyDir;
 import org.ike.pms.pmsfilesystem.service.FileService;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @Author: ike
@@ -40,20 +38,12 @@ public class FileServiceImpl implements FileService {
         if (dirName == null || dirName.isEmpty()) {
             throw new IllegalArgumentException("基础目录为空");
         }
-        LinkedHashSet<String> dirSet = new LinkedHashSet<>();
-        File currentFile = new File(dirName);
+        Set<String> dirSet = new LinkedHashSet<>();
+        File currentDir = new File(dirName);
         if (deep) {
-            FileUtil.deepListDir(currentFile, dirSet);
+            FileUtil.deepListDir(currentDir, dirSet);
         } else {
-            String[] dirs = currentFile.list();
-            if (dirs != null && dirs.length > 0) {
-                for (String dirTemp : dirs) {
-                    File dir = new File(dirName + File.separator + dirTemp);
-                    if (dir.isDirectory()) {
-                        dirSet.add(dirName.endsWith(File.separator) ? dirName + dirTemp : dirName + File.separator + dirTemp);
-                    }
-                }
-            }
+            dirSet = FileUtil.listDir(dirName);
         }
         return dirSet;
     }
@@ -63,21 +53,40 @@ public class FileServiceImpl implements FileService {
         if (dirName == null || dirName.isEmpty()) {
             throw new IllegalArgumentException("基础目录为空");
         }
-        LinkedHashSet<String> fileSet = new LinkedHashSet<>();
+        Set<String> fileSet = new LinkedHashSet<>();
         File currentFile = new File(dirName);
         if (deep) {
             FileUtil.deepListFile(currentFile, fileSet);
         } else {
-            String[] files = currentFile.list();
-            if (files != null && files.length > 0) {
-                for (String fileTemp : files) {
-                    File file = new File(dirName + File.separator + fileTemp);
-                    if (file.isFile()) {
-                        fileSet.add(dirName.endsWith(File.separator) ? dirName + fileTemp : dirName + File.separator + fileTemp);
-                    }
-                }
-            }
+            fileSet = FileUtil.listFile(dirName);
         }
         return fileSet;
+    }
+
+    @Override
+    public boolean copyFileInDirs(List<CopyDir> copyDirs) {
+        List<File> list = new ArrayList<>();
+        if (copyDirs != null && copyDirs.size() > 0) {
+            Random random = new Random();
+            for (CopyDir copyDir : copyDirs) {
+                String dirPath = copyDir.getDir();
+                int num = copyDir.getNum();
+                File dir = new File(dirPath);
+                if (dir.isDirectory()) {
+                    List<String> fileList = new ArrayList<>(FileUtil.listFile(dirPath));
+                    if (fileList.size() > 0 && num<=fileList.size()) {
+                        while (num > 0) {
+                            int index = random.nextInt(fileList.size());
+                            String selectFile = fileList.get(index);
+                            list.add(new File(dirPath.endsWith(File.separator)?dirPath+selectFile:dirPath+File.separator+selectFile));
+                            fileList.remove(index);
+                            num--;
+                        }
+                    }
+                }
+
+            }
+        }
+        return FileUtil.copyFileToClipboard(list);
     }
 }

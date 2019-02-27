@@ -1,5 +1,6 @@
 package org.ike.pms.pmsfilesystem.controller;
 
+import org.ike.pms.pmsfilesystem.entity.CopyDir;
 import org.ike.pms.pmsfilesystem.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +35,12 @@ public class FileController {
         String baseDir = fileService.getBasicInfo().get("base");
         Set<String> fileSet = fileService.listFile(baseDir, true);
         return new ArrayList<>(fileSet);
+    }
+
+    @RequestMapping(value="/copy/dir", method = RequestMethod.POST)
+    public boolean copyFileInDirs(List<CopyDir> paths) {
+
+        return false;
     }
 
 }
