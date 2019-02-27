@@ -71,7 +71,7 @@ public class FileServiceImpl implements FileService {
             String[] files = currentFile.list();
             if (files != null && files.length > 0) {
                 for (String fileTemp : files) {
-                    File file = new File(fileTemp);
+                    File file = new File(dirName + File.separator + fileTemp);
                     if (file.isFile()) {
                         fileSet.add(dirName.endsWith(File.separator) ? dirName + fileTemp : dirName + File.separator + fileTemp);
                     }
