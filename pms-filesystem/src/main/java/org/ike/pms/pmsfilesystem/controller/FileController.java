@@ -38,9 +38,8 @@ public class FileController {
     }
 
     @RequestMapping(value="/copy/dir", method = RequestMethod.POST)
-    public boolean copyFileInDirs(List<CopyDir> paths) {
-
-        return false;
+    public boolean copyFileInDirs(List<CopyDir> copyDirs) {
+        return fileService.copyFileInDirs(copyDirs);
     }
 
 }
