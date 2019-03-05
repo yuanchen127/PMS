@@ -5,6 +5,7 @@ import org.ike.pms.pmsfilesystem.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -38,8 +39,10 @@ public class FileController {
     }
 
     @RequestMapping(value="/copy/dir", method = RequestMethod.POST)
-    public boolean copyFileInDirs(List<CopyDir> copyDirs) {
-        return fileService.copyFileInDirs(copyDirs);
+    public boolean copyFileInDirs( CopyDir copyDirs) {
+        ArrayList<CopyDir> list = new ArrayList<>();
+        list.add(copyDirs);
+        return fileService.copyFileInDirs(list);
     }
 
 }

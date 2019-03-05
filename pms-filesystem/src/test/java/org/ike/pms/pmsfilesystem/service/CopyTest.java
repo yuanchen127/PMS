@@ -1,5 +1,7 @@
 package org.ike.pms.pmsfilesystem.service;
 
+import lombok.extern.slf4j.Slf4j;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -7,48 +9,17 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @Author: ike
  * @Date: 2019-02-27 15:11
  */
+@Slf4j
 public class CopyTest {
     public static void main(String[] args) {
-
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 
-        Transferable contents = new Transferable() {
-            DataFlavor[] dataFlavors = new DataFlavor[] { DataFlavor.javaFileListFlavor };
-
-            @Override
-            public Object getTransferData(DataFlavor flavor)
-                    throws UnsupportedFlavorException, IOException {
-                List<File> files = new ArrayList<>();
-                files.add(new File("E:\\\\test.txt"));
-                return files;
-            }
-
-            @Override
-            public DataFlavor[] getTransferDataFlavors() {
-                return dataFlavors;
-            }
-
-            @Override
-            public boolean isDataFlavorSupported(DataFlavor flavor) {
-                for (int i = 0; i < dataFlavors.length; i++) {
-                    if (dataFlavors[i].equals(flavor)) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        };
-
-        clipboard.setContents(contents, null);
-
-//        paste("c:\\123");
     }
 
     public static void paste(String dirPath) {
@@ -75,8 +46,11 @@ public class CopyTest {
                     }
                 }
             } catch (UnsupportedFlavorException ex) {
+                ex.printStackTrace();
             } catch (IOException ex) {
+                ex.printStackTrace();
             } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
@@ -113,6 +87,40 @@ public class CopyTest {
             throw new Exception("复制整个文件夹内容操作出错", e);
         }
     }
+
+    private static void copyFile(List<File> files) {
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+
+        Transferable contents = new Transferable() {
+            DataFlavor[] dataFlavors = new DataFlavor[] { DataFlavor.javaFileListFlavor };
+
+            @Override
+            public Object getTransferData(DataFlavor flavor)
+                    throws UnsupportedFlavorException, IOException {
+//                List<File> files = new ArrayList<>();
+//                files.add(new File("E:\\test.txt"));
+                return files;
+            }
+
+            @Override
+            public DataFlavor[] getTransferDataFlavors() {
+                return dataFlavors;
+            }
+
+            @Override
+            public boolean isDataFlavorSupported(DataFlavor flavor) {
+                for (int i = 0; i < dataFlavors.length; i++) {
+                    if (dataFlavors[i].equals(flavor)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        };
+
+        clipboard.setContents(contents, null);
+    }
+
 
     private static void copy(String destinationFolder, File temp,int flag)
             throws FileNotFoundException, IOException {

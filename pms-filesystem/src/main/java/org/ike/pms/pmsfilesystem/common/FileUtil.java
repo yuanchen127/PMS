@@ -5,6 +5,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -81,13 +82,18 @@ public class FileUtil {
     }
 
     public static boolean copyFileToClipboard(List<File> files) {
+//    public static boolean copyFileToClipboard(String str) {
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         Transferable contents = new Transferable() {
             DataFlavor[] dataFlavors = new DataFlavor[] { DataFlavor.javaFileListFlavor };
 
             @Override
             public Object getTransferData(DataFlavor flavor) {
-                return files;
+                List list = new ArrayList(files);
+//                list.add(new File("F:\\test\\test1 - 副本.txt"));
+//                list.add(new File("F:\\test\\test1.txt"));
+//                list.addAll(files);
+                return list;
             }
 
             @Override
@@ -106,6 +112,7 @@ public class FileUtil {
             }
         };
         clipboard.setContents(contents, null);
-        return clipboard.isDataFlavorAvailable(DataFlavor.javaFileListFlavor);
+
+        return Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).isDataFlavorSupported(DataFlavor.javaFileListFlavor);
     }
 }

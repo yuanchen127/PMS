@@ -78,7 +78,7 @@ public class FileServiceImpl implements FileService {
                         while (num > 0) {
                             int index = random.nextInt(fileList.size());
                             String selectFile = fileList.get(index);
-                            list.add(new File(dirPath.endsWith(File.separator)?dirPath+selectFile:dirPath+File.separator+selectFile));
+                            list.add(new File(selectFile));
                             fileList.remove(index);
                             num--;
                         }
@@ -88,5 +88,6 @@ public class FileServiceImpl implements FileService {
             }
         }
         return FileUtil.copyFileToClipboard(list);
+//        return FileUtil.copyFileToClipboard("test");
     }
 }
