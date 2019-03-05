@@ -25,8 +25,8 @@ public class FreemarkerHandler {
 //        map.put("name", "testName");
         map.put("package", "org.ike.pms.api.freemarker");
         /** 使用clazz */
-        org.ike.pms.api.freemarker.Clazz clazz = new org.ike.pms.api.freemarker.Clazz();
-        org.ike.pms.api.freemarker.Clazz.packageName = "org.ike.pms.api.freemarker";
+        Clazz clazz = new Clazz();
+        Clazz.packageName = "org.ike.pms.api.freemarker";
         clazz.addField("String", "name");
         /** end */
         // 模板目录
@@ -41,7 +41,7 @@ public class FreemarkerHandler {
         String fileName = "Ntest.java";
 
         map.put("class", fileName.split("\\.")[0]);
-        org.ike.pms.api.freemarker.Clazz.className = fileName.split("\\.")[0];
+        Clazz.className = fileName.split("\\.")[0];
 //        map.put("class", fileName);
         // 创建文件夹
         new File(targetPath).mkdirs();
