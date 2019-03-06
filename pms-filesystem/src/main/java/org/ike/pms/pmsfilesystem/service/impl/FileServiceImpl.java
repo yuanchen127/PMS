@@ -17,10 +17,10 @@ import java.util.*;
 @Slf4j
 @Service
 public class FileServiceImpl implements FileService {
-    private static final HashMap<String, String> BASIC_FILE_INFO = new HashMap<>();
+    private static final Map<String, String> BASIC_FILE_INFO = new HashMap<>();
 
     @Override
-    public Map getBasicInfo() {
+    public Map<String, String> getBasicInfo() {
         return BASIC_FILE_INFO;
     }
 
@@ -84,10 +84,8 @@ public class FileServiceImpl implements FileService {
                         }
                     }
                 }
-
             }
         }
         return FileUtil.copyFileToClipboard(list);
-//        return FileUtil.copyFileToClipboard("test");
     }
 }
