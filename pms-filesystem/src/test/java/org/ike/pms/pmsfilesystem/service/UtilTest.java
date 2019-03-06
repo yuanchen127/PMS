@@ -2,6 +2,8 @@ package org.ike.pms.pmsfilesystem.service;
 
 import lombok.extern.slf4j.Slf4j;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.io.File;
 import java.util.*;
 
@@ -30,21 +32,24 @@ public class UtilTest {
 
     }
 
-    public static void listDir(File dir,Set<String> fileSet) {
-        String[] list = dir.list();
-        String lastDir = dir.getAbsolutePath();
-        if (list == null || list.length <= 0) {
-            fileSet.add(lastDir);
-            return;
-        }
-        for (String name : list) {
-            String currentDir = lastDir + File.separator + name;
-            File currentFile = new File(currentDir);
-            if (currentFile.isFile()) {
+    private static void listDir(File dir, Set<String> fileSet) {
+        if (dir != null) {
+            String[] list = dir.list();
+            String lastDir = dir.getAbsolutePath();
+            if (list == null || list.length <= 0) {
                 fileSet.add(lastDir);
-                continue;
+                return;
             }
-            listDir(currentFile, fileSet);
+            for (String name : list) {
+                String currentDir = lastDir + File.separator + name;
+                File currentFile = new File(currentDir);
+                if (currentFile.isFile()) {
+                    fileSet.add(lastDir);
+                    continue;
+                }
+                listDir(currentFile, fileSet);
+            }
         }
+
     }
 }
