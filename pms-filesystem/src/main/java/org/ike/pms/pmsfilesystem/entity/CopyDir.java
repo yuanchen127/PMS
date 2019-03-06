@@ -3,8 +3,8 @@ package org.ike.pms.pmsfilesystem.entity;
 import lombok.Data;
 
 /**
- * @Author: ike
- * @Date: 2019-02-27 16:12
+ * @author ike
+ * @since 2019-02-27 16:12
  */
 @Data
 public class CopyDir {

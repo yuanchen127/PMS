@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @Author: ike
- * @Date: 2019-02-26 14:27
+ * @author ike
+ * @since 2019-02-26 14:27
  */
 @RestController
 @RequestMapping(value="/system")
