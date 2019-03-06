@@ -18,6 +18,7 @@ import java.util.*;
 @Service
 public class FileServiceImpl implements FileService {
     private static final Map<String, String> BASIC_FILE_INFO = new HashMap<>();
+    private static final String BASIC_BASE = "base";
 
     @Override
     public Map<String, String> getBasicInfo() {
@@ -27,7 +28,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public boolean initBase(String dirName) {
         if (dirName != null && !dirName.isEmpty()) {
-            BASIC_FILE_INFO.put("base", dirName);
+            BASIC_FILE_INFO.put(BASIC_BASE, dirName);
             return true;
         }
         return false;
