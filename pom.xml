@@ -12,6 +12,7 @@
 		<module>pms-es</module>
 		<module>pms-springmvc</module>
 		<module>pms-patterns</module>
+		<module>pms-filesystem</module>
 
 	  <module>pms-test</module>
     <module>pms-swing</module>

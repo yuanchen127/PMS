@@ -7,15 +7,20 @@
         <artifactId>pms-springcloud</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>eureka-server</artifactId>
-    <packaging>jar</packaging>
-    <name>eureka-server</name>
-    <description>spring cloud eureka-server</description>
+    <artifactId>feign-consumer</artifactId>
+    <name>feign-consumer</name>
+    <description>Demo project for Spring Boot</description>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-eureka-server</artifactId>
+            <artifactId>spring-cloud-starter-eureka</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-feign</artifactId>
         </dependency>
     </dependencies>
+
 </project>
