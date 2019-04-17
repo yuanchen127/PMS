@@ -1,0 +1,16 @@
+package ${package.Service};
+
+import com.baomidou.mybatisplus.extension.service.IService;
+import ${package.Mapper}.$table.mapperName;
+import ${package.Entity}.$table.entityName;
+
+/**
+*
+* @author $author
+* @since $date
+*/
+public interface $table.serviceName extends IService<$table.entityName>{
+
+    $table.mapperName getMapper();
+
+}

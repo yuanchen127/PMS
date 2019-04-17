@@ -1,0 +1,35 @@
+##package org.ike.pms.mybatisplus.mybaitsplusdemo.entity;
+package ${package.Entity};
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
+import java.io.Serializable;
+
+
+/**
+*
+* @author $author
+* @since $date
+*/
+@Data
+@EqualsAndHashCode(callSuper = false)
+@Accessors(fluent = true)
+@TableName("$table.name")
+public class $table.entityName implements Serializable{
+
+#foreach($field in $table.fields)
+
+    #if($!field.keyFlag)
+    @TableId(value="$field.name", type=IdType.ID_WORKER_STR)
+    #else
+    @TableField("$field.name")
+    #end
+    @JsonProperty("$field.name")
+    private $field.columnType.getType() $field.name;
+#end
+}
