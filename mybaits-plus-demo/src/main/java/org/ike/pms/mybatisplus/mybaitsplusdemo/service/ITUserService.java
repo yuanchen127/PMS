@@ -21,4 +21,8 @@ public interface ITUserService extends IService<TUser> {
     List<TUser> testList();
 
     List<TUser> testSelect(String user_name, String password);
+
+    void testInsert1();
+
+    void testInsert2();
 }

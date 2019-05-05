@@ -27,6 +27,7 @@ public class TUserServiceImpl extends ServiceImpl<TUserMapper, TUser> implements
         return this.baseMapper;
     }
 
+    @DataSource(DataSourceEnum.DB2)
     public List<TUser> testList(){
         return list();
     }
@@ -34,6 +35,24 @@ public class TUserServiceImpl extends ServiceImpl<TUserMapper, TUser> implements
     @DataSource(DataSourceEnum.DB2)
     public List<TUser> testSelect(String user_name,String password){
         return this.baseMapper.testSelect(user_name,password);
+    }
+
+    @DataSource(DataSourceEnum.DB1)
+    public void testInsert1() {
+        TUser user = new TUser();
+        user.setUserId("test-transaction");
+        user.setUserName("transaction");
+        user.setPassword("123");
+        this.baseMapper.insert(user);
+    }
+
+    @DataSource(DataSourceEnum.DB2)
+    public void testInsert2() {
+        TUser user = new TUser();
+        user.setUserId("test-transactions");
+        user.setUserName("transaction");
+        user.setPassword("123");
+        this.baseMapper.insert(user);
     }
 
 }

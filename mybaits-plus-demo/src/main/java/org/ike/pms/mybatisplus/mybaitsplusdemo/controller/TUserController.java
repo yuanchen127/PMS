@@ -1,16 +1,18 @@
 package org.ike.pms.mybatisplus.mybaitsplusdemo.controller;
 
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.Data;
+import org.ike.pms.mybatisplus.mybaitsplusdemo.config.MultiDatasource.DataSource;
+import org.ike.pms.mybatisplus.mybaitsplusdemo.config.MultiDatasource.DataSourceEnum;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.entity.TUser;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.service.ITUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -27,14 +29,42 @@ public class TUserController {
     @Autowired
     private ITUserService itUserService;
 
+    @RequestMapping("test/map/{pageNum}/{pageSize}")
+    public Page<Map<String, Object>> testMapSelect(@PathVariable Integer pageNum, @PathVariable Integer pageSize) {
+        Page<Map<String, Object>> page = new Page(pageNum, pageSize);
+
+        return page.setRecords(itUserService.getMapper().testMapSelect(page ,"qwe","qwe"));
+    }
+
     @RequestMapping("test")
     public List<TUser> testSelect(String v) {
-        return itUserService.testSelect("ike","123456");
+        return itUserService.getMapper().testSelect("qwe","qwe");
+    }
+
+    @RequestMapping("test/provider/{pageNum}/{pageSize}")
+    public Page<TUser> testProviderSelect(@PathVariable Integer pageNum, @PathVariable Integer pageSize) {
+        Page page = new Page(pageNum, pageSize);
+        return page.setRecords(itUserService.getMapper().testProviderSelect(page, "qwe","qwe"));
     }
 
     @RequestMapping("list")
     public List<TUser> list(){
         return itUserService.testList();
+    }
+
+    @RequestMapping("list1")
+    @DataSource(DataSourceEnum.DB2)
+    public List<TUser> list1() {
+        return itUserService.list();
+    }
+
+    @RequestMapping("/test/transaction")
+    @Transactional
+    public int testMultiTransaction() {
+        itUserService.testInsert1();
+//        int i = 1/0;
+        itUserService.testInsert2();
+        return 0;
     }
 
     @RequestMapping(value = "save",method = RequestMethod.POST)
