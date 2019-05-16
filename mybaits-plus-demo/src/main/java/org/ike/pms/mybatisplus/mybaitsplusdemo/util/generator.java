@@ -69,25 +69,33 @@ public class generator {
         String entityTemplate = "/template/entity.vm";
         String serviceTemplate = "/template/service.vm";
         String serviceImplTemplate = "/template/serviceImpl.vm";
+        String mappingTemplate = "/template/mapping.vm";
         fileOutConfigList.add(new FileOutConfig(entityTemplate) {
             @Override
             public String outputFile(TableInfo tableInfo) {
-                return projectPath + "/src/main/java/org/ike/pms/mybatisplus/mybaitsplusdemo/template/"+packageConfig.getEntity()
-                        + "/" + tableInfo.getEntityName() + StringPool.DOT_JAVA;
+                return (globalConfig.getOutputDir()+packageConfig.getParent()+"/"+packageConfig.getEntity()
+                        + "/" + tableInfo.getEntityName()).replaceAll("\\.","/") + StringPool.DOT_JAVA;
             }
         });
         fileOutConfigList.add(new FileOutConfig(serviceTemplate) {
             @Override
             public String outputFile(TableInfo tableInfo) {
-                return projectPath + "/src/main/java/org/ike/pms/mybatisplus/mybaitsplusdemo/template/"+packageConfig.getService()
-                        + "/" + tableInfo.getServiceName() + StringPool.DOT_JAVA;
+                return (globalConfig.getOutputDir()+packageConfig.getParent()+"/"+packageConfig.getService()
+                        + "/" + tableInfo.getServiceName()).replaceAll("\\.","/") + StringPool.DOT_JAVA;
             }
         });
         fileOutConfigList.add(new FileOutConfig(serviceImplTemplate) {
             @Override
             public String outputFile(TableInfo tableInfo) {
-                return (projectPath + "/src/main/java/org/ike/pms/mybatisplus/mybaitsplusdemo/template/"+packageConfig.getServiceImpl()
+                return (globalConfig.getOutputDir()+packageConfig.getParent()+"/"+packageConfig.getServiceImpl()
                         + "/" + tableInfo.getServiceImplName()).replaceAll("\\.","/") + StringPool.DOT_JAVA;
+            }
+        });
+        fileOutConfigList.add(new FileOutConfig(mappingTemplate) {
+            @Override
+            public String outputFile(TableInfo tableInfo) {
+                return (globalConfig.getOutputDir()+packageConfig.getParent()+"/"+packageConfig.getXml()
+                        + "/" + tableInfo.getXmlName()).replaceAll("\\.","/") + StringPool.DOT_XML;
             }
         });
 
@@ -101,13 +109,13 @@ public class generator {
                                 File file = new File(filePath);
                                 boolean exist = file.exists();
                                 if (exist) {
-                                    if (FileType.ENTITY == fileType) {
+                                    if (FileType.ENTITY == fileType || FileType.XML == fileType) {
                                         return true;
                                     } else {
                                         return false;
                                     }
                                 }
-                                if (filePath.endsWith("Mapper.xml") || filePath.endsWith("Controller.java")) {
+                                if (filePath.endsWith("Controller.java")) {
                                     return false;
                                 }
                                 //不存在的文件都需要创建
@@ -116,15 +124,17 @@ public class generator {
                         });
 
         TemplateConfig templateConfig = new TemplateConfig();
-//        templateConfig.setEntity(null);
-        templateConfig.setXml(null);
+        templateConfig.setEntity(entityTemplate)
+                .setXml(mappingTemplate)
+                .setService(serviceTemplate)
+                .setServiceImpl(serviceImplTemplate);
 
         autoGenerator.setStrategy(strategyConfig)
                 .setGlobalConfig(globalConfig)
                 .setDataSource(dataSourceConfig)
                 .setPackageInfo(packageConfig)
                 .setCfg(injectionConfig)
-//                .setTemplate(templateConfig)
+                .setTemplate(templateConfig)
                 .execute();
     }
 }

@@ -1,6 +1,5 @@
 package org.ike.pms.mybatisplus.mybaitsplusdemo.config;
 
-import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import com.atomikos.icatch.jta.UserTransactionImp;
 import com.atomikos.icatch.jta.UserTransactionManager;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
@@ -23,6 +22,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.transaction.jta.JtaTransactionManager;
 
 import javax.sql.DataSource;
@@ -103,10 +103,12 @@ public class MybatisPlusConfig {
         MybatisSqlSessionFactoryBean sqlSessionFactory = new MybatisSqlSessionFactoryBean();
         sqlSessionFactory.setDataSource(multipleDataSource(db1(), db2()));
         sqlSessionFactory.setTransactionFactory(new MultiDataSourceTransactionFactory());
+        sqlSessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:org/ike/pms/mybatisplus/mybaitsplusdemo/dao/**/*Mapper.xml"));
 
         MybatisConfiguration configuration = new MybatisConfiguration();
         configuration.setJdbcTypeForNull(JdbcType.NULL);
         configuration.setMapUnderscoreToCamelCase(true);
+        configuration.setLogImpl(org.apache.ibatis.logging.stdout.StdOutImpl.class);
         configuration.setCacheEnabled(false);
         sqlSessionFactory.setConfiguration(configuration);
         sqlSessionFactory.setPlugins(new Interceptor[]{ //PerformanceInterceptor(),OptimisticLockerInterceptor()

@@ -1,0 +1,79 @@
+#macro(checkJdbcType $type)
+    #if($type=='INT')INTEGER#else $type #end
+#end
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="${package.Mapper}.${table.mapperName}">
+
+    #set ($i_id = "")##主键字段
+    #set ($i_id_property = "")##主键对应实体属性
+    #set ($i_id_type = "")##主键字段数据类型
+    #set ($i_id_property_type = "")##主键对应实体属性类型
+    #set ($i_exist = false)##主键是否已经存在
+    #set ($i_insert_values = "")##新增values
+    <resultMap id="BaseResultMap" type="${package.Entity}.${table.entityName}">
+        #foreach($field in $table.fields)
+            ##拼接新增values
+            #set ($i_insert_values = $i_insert_values+"#{param.${field.propertyName}},")
+            #if($!field.keyFlag && !$i_exist)
+                #set($i_id = ${field.name})
+                #set($i_id_property = ${field.propertyName})
+                #if(${field.type}=='INT')
+                    #set($i_id_type = 'INTEGER')
+                #else
+                    #set($i_id_type = ${field.type})
+                #end
+                #set($i_id_property_type = ${field.columnType})
+                #set ($i_exist = true)
+        <id column="${field.name}" jdbcType="#checkJdbcType(${field.type.substring(0, ${field.type.indexOf("(")}).toUpperCase()})" property="${field.propertyName}"/>
+            #else
+##        <result column="${field.name}" jdbcType="${field.type.substring(0, ${field.type.indexOf("(")}).toUpperCase()}" property="${field.propertyName}"/>
+                <result column="${field.name}" jdbcType="#checkJdbcType(${field.type.substring(0, ${field.type.indexOf("(")}).toUpperCase()})" property="${field.propertyName}"/>
+            #end
+        #end
+    </resultMap>
+
+    <select id="listWithTable" resultMap="BaseResultMap">
+        select * from \${table}
+
+    </select>
+
+    <select id="listByParamWithTable" resultMap="BaseResultMap">
+        select * from \${table} ${ew.customSqlSegment}
+    </select>
+
+    <insert id="saveWithTable" >
+        insert into \${table} values($i_insert_values.substring(0, $i_insert_values.length() - 1))
+    </insert>
+
+    <insert id="saveBatchWithTable" >
+        insert into \${table} values
+        <foreach item="item" collection="list" separator=",">
+            ($i_insert_values.substring(0, $i_insert_values.length() - 1))
+        </foreach>
+    </insert>
+
+    <delete id="removeByIdWithTable">
+        delete from \${table} where ${i_id}=#{id}
+    </delete>
+
+    <delete id="removeByIdsWithTable">
+        delete from \${table} where ${i_id} in
+        <foreach item="item" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <update id="updateByIdWithTable">
+        update \${table}
+        <set>
+        #foreach($field in $table.fields)
+            <if test="param.${field.propertyName}!=null">
+                ${field.name}=#{param.${field.propertyName}},
+            </if>
+        #end
+        </set>
+        where ${i_id}=#{param.${i_id_property}}
+    </update>
+</mapper>

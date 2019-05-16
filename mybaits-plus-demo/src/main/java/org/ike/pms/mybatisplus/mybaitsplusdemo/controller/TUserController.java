@@ -2,11 +2,11 @@ package org.ike.pms.mybatisplus.mybaitsplusdemo.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import lombok.Data;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.config.MultiDatasource.DataSource;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.config.MultiDatasource.DataSourceEnum;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.entity.TUser;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.service.ITUserService;
+import org.ike.pms.mybatisplus.mybaitsplusdemo.service.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +28,18 @@ public class TUserController {
 
     @Autowired
     private ITUserService itUserService;
+
+    @Autowired
+    private TestService testService;
+
+    @RequestMapping(value = "/test/xml/", method = RequestMethod.GET)
+    public List testXml() {
+        TUser user = new TUser();
+        user.setUserName("123");
+        List<TUser> list = itUserService.getMapper().listByParamWithTable(user, "pms.t_user");
+//        List<TUser> list = itUserService.getMapper().testXml();
+        return list;
+    }
 
     @RequestMapping("test/map/{pageNum}/{pageSize}")
     public Page<Map<String, Object>> testMapSelect(@PathVariable Integer pageNum, @PathVariable Integer pageSize) {

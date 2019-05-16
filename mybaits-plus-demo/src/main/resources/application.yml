@@ -15,3 +15,6 @@ spring:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    key-generator: com.baomidou.mybatisplus.incrementer.OracleKeyGenerator
+

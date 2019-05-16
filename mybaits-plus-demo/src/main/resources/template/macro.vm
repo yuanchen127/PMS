@@ -1,0 +1,3 @@
+#macro(checkJdbcType $type)
+    #if($type=='INT')INTEGER#else $type #end
+#end

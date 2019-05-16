@@ -1,6 +1,8 @@
 package org.ike.pms.mybatisplus.mybaitsplusdemo.dao;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import javafx.scene.control.Pagination;
 import org.apache.ibatis.annotations.Param;
@@ -36,4 +38,13 @@ public interface TUserMapper extends BaseMapper<TUser> {
 
     @SelectProvider(type = UserProvider.class,method = "selectUserByName")
     List<TUser> selectUserByName(String name);
+
+    List<TUser> listByParamWithTable(@Param("obj") TUser user,@Param("table")String table);
+
+    /**
+     * 测试模板sql
+     */
+    List<TUser> listWithTable(@Param("table")String table);
+
+    List<TUser> listByWrapperWithTable(@Param("table") String table, @Param(Constants.WRAPPER)QueryWrapper<TUser> queryWrapper);
 }

@@ -29,7 +29,7 @@ public class TUser implements Serializable {
     private String userId;
 
     @TableField("user_name")
-    @JsonProperty("")
+    @JsonProperty("userName")
     private String userName;
 
     @TableField("password")
@@ -38,5 +38,7 @@ public class TUser implements Serializable {
     @TableField("phone")
     private String phone;
 
+    @TableField("age")
+    private Integer age;
 
 }

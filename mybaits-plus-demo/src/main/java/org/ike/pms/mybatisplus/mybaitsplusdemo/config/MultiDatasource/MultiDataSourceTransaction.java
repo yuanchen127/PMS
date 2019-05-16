@@ -51,18 +51,19 @@ public class MultiDataSourceTransaction implements Transaction{
      */
     @Override
     public Connection getConnection() throws SQLException {
-        String databaseIdentification = DataSourceContextHolder.getDataSource();
+        String databaseIdentification = String.valueOf(DataSourceContextHolder.getDataSource());
         if (databaseIdentification.equals(mainDatabaseIdentification)) {
             if (mainConnection != null) return mainConnection;
             else {
                 openMainConnection();
                 mainDatabaseIdentification =databaseIdentification;
                 return mainConnection;
-            }
+        }
         } else {
             if (!otherConnectionMap.containsKey(databaseIdentification)) {
                 try {
                     Connection conn = dataSource.getConnection();
+                    conn.setAutoCommit(false);//identified
                     otherConnectionMap.put(databaseIdentification, conn);
                 } catch (SQLException ex) {
                     throw new CannotGetJdbcConnectionException("Could not get JDBC Connection", ex);
