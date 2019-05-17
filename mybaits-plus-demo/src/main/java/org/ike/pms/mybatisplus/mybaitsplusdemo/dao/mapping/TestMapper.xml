@@ -17,14 +17,14 @@
         </if>
     </select>
 
-    <insert id="saveWithTable">
-        insert into ${table} values(#{param.userId},#{param.userName},#{param.password},#{param.phone},#{param.age})
+    <insert id="saveWithTable" >
+        insert into ${table} values(#{obj.userId},#{obj.userName},#{obj.password},#{obj.phone},#{obj.age})
     </insert>
 
     <insert id="saveBatchWithTable" >
         insert into ${table} values
         <foreach item="item" collection="list" separator=",">
-            insert into ${table} values(#{param.userId},#{param.userName},#{param.password},#{param.phone},#{param.age})
+            (#{item.userId},#{item.userName},#{item.password},#{item.phone},#{item.age})
         </foreach>
     </insert>
 
@@ -39,25 +39,112 @@
         </foreach>
     </delete>
 
+    <delete id="removeWithTable">
+        delete from ${table}
+        <if test="_parameter.containsKey('ew') and ew.customSqlSegment!=null">
+            ${ew.customSqlSegment}
+        </if>
+    </delete>
 
-
-
-    <update id="updateByIdWithTable">
-        update #{table}
+    <update id="updateWithTable">
+        update ${table}
         <set>
-            <if test="userId!=null">
-                user_id=#{userId},
+            <if test="obj.userId!=null">
+                user_id=#{obj.userId},
             </if>
-            <if test="userName!=null">
-                user_name=#{userName},
+            <if test="obj.userName!=null">
+                user_name=#{obj.userName},
             </if>
-            <if test="password!=null">
-                password=#{password},
+            <if test="obj.password!=null">
+                password=#{obj.password},
             </if>
-            <if test="phone!=null">
-                phone=#{phone},
+            <if test="obj.phone!=null">
+                phone=#{obj.phone},
+            </if>
+            <if test="obj.age!=null">
+                age=#{obj.age},
             </if>
         </set>
-        where user_id=#{userId}
+        <choose>
+            <when test="_parameter.containsKey('ew') and ew.customSqlSegment!=null">
+                ${ew.customSqlSegment}
+            </when>
+            <otherwise>
+                where user_id=#{obj.userId}
+            </otherwise>
+        </choose>
+
     </update>
+
+    <update id="updateBatchByIdWithTable">
+        <foreach item="item" collection="list" separator=";" close=";">
+            update ${table}
+            <set>
+                <if test="item.userId!=null">
+                    user_id=#{item.userId},
+                </if>
+                <if test="item.userName!=null">
+                    user_name=#{item.userName},
+                </if>
+                <if test="item.password!=null">
+                    password=#{item.password},
+                </if>
+                <if test="item.phone!=null">
+                    phone=#{item.phone},
+                </if>
+                <if test="item.age!=null">
+                    age=#{item.age},
+                </if>
+            </set>
+            where user_id=#{item.userId}
+        </foreach>
+    </update>
+
+    <insert id="saveOrUpdateWithTable">
+        insert into ${table} values
+        (#{obj.userId},#{obj.userName},#{obj.password},#{obj.phone},#{obj.age})
+        on duplicate key update
+        <trim prefix="" suffixOverrides=",">
+            <if test="obj.userId!=null">
+                user_id =values(user_id),
+            </if>
+            <if test="obj.userName!=null">
+                user_name =values(user_name),
+            </if>
+            <if test="obj.password!=null">
+                password =values(password),
+            </if>
+            <if test="obj.phone!=null">
+                phone =values(phone),
+            </if>
+            <if test="obj.age!=null">
+                age =values(age),
+            </if>
+        </trim>
+    </insert>
+
+    <insert id="saveOrUpdateBatchWithTable">
+        <foreach collection="list" item="item" index="index" separator=";">
+            insert into ${table} values
+            (#{item.userId},#{item.userName},#{item.password},#{item.phone},#{item.age})
+            on duplicate key update
+            <trim prefix="" suffixOverrides=",">
+                <if test="item.userId!=null">
+                    user_id =values(user_id),
+                </if>
+                <if test="item.userName!=null">
+                    user_name =values(user_name),
+                </if>
+                <if test="item.password!=null">
+                    password =values(password),
+                </if>
+                <if test="item.phone!=null">
+                    phone =values(phone),
+                </if>
+                <if test="item.age!=null">
+                    age =values(age),
+                </if>
+            </trim>
+        </foreach>
+    </insert>
 </mapper>

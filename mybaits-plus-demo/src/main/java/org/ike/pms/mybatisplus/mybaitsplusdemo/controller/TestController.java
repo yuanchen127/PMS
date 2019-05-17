@@ -1,10 +1,9 @@
 package org.ike.pms.mybatisplus.mybaitsplusdemo.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.incrementer.OracleKeyGenerator;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import io.swagger.annotations.ApiOperation;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.entity.TUser;
-import org.ike.pms.mybatisplus.mybaitsplusdemo.service.ITUserService;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.service.TestService;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.vo.BaseVo;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.vo.TUserBatchVo;
@@ -67,26 +66,6 @@ public class TestController {
     }
 
     @ApiOperation("通过实体对象添加数据")
-    @RequestMapping(value = "save/map", method = RequestMethod.GET)
-    @Transactional
-    public int saveByMap() {
-        try {
-            Map<String, String> map = new HashMap<>();
-            map.put("userName", "iii");
-            map.put("password", "iii");
-            if (!map.containsKey("userId")) {
-                map.put("userId", UUID.randomUUID().toString());
-                return testService.getMapper().saveWithTable("pms.t_user", map);
-            }
-            return testService.getMapper().saveWithTable("pms.t_user", map);
-        } catch (Exception e) {
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
-    @ApiOperation("通过实体对象添加数据")
     @RequestMapping(value = "batch/save/entity", method = RequestMethod.GET)
     @Transactional
     public int saveBatchByEntity(@RequestBody TUserBatchVo batchVo) {
@@ -131,6 +110,87 @@ public class TestController {
         }
         return 0;
     }
+
+    @ApiOperation("按条件删除数据")
+    @RequestMapping(value = "delete/param", method = RequestMethod.GET)
+    @Transactional
+    public int remove(@RequestBody Map map) {
+        try {
+            QueryWrapper<TUser> queryWrapper = new QueryWrapper<>();
+//            queryWrapper.eq("user_id","xml");
+            return testService.getMapper().removeWithTable((String) map.get("table"), queryWrapper);
+        } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @ApiOperation("通过ID更新数据")
+    @RequestMapping(value = "update/id", method = RequestMethod.GET)
+    @Transactional
+    public int updateByIdWithTable(@RequestBody BaseVo baseVo) {
+        try {
+            return testService.getMapper().updateWithTable(baseVo.getTable(), baseVo.getParam());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @ApiOperation("按条件更新数据")
+    @RequestMapping(value = "update/param", method = RequestMethod.GET)
+    @Transactional
+    public int updateByParamWithTable(@RequestBody BaseVo baseVo) {
+        try {
+            UpdateWrapper<TUser> updateWrapper = new UpdateWrapper<>();
+            updateWrapper.like("user_id", "test");
+            return testService.getMapper().updateWithTable(baseVo.getTable(), baseVo.getParam(), updateWrapper);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @ApiOperation("通过ID批量更新数据")
+    @RequestMapping(value = "batch/update/id", method = RequestMethod.GET)
+    @Transactional
+    public int updateBatchByIdWithTable(@RequestBody TUserBatchVo batchVo) {
+        try {
+            return testService.getMapper().updateBatchByIdWithTable(batchVo.getTable(), batchVo.getList());
+        } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @ApiOperation("通过ID新增或更新数据")
+    @RequestMapping(value = "save_update/id", method = RequestMethod.GET)
+    @Transactional
+    public int saveOrUpdateWithTable(@RequestBody BaseVo baseVo) {
+        try {
+            return testService.getMapper().saveOrUpdateWithTable(baseVo.getTable(), baseVo.getParam());
+        } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @ApiOperation("通过ID批量新增或更新数据")
+    @RequestMapping(value = "batch/save_update/id", method = RequestMethod.GET)
+    @Transactional
+    public int saveOrUpdateBatchWithTable(@RequestBody TUserBatchVo batchVo) {
+        try {
+            return testService.getMapper().saveOrUpdateBatchWithTable(batchVo.getTable(), batchVo.getList());
+        } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
 
 
 }
