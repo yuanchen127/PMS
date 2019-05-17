@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -55,14 +54,15 @@ public class TestController {
     public int saveByEntity(@RequestBody BaseVo baseVo) {
             try {
             if (StringUtils.isEmpty(baseVo.getParam().getUserId())) {
-                return testService.getMapper().saveWithTable(baseVo.getTable(), baseVo.getParam().setUserId(UUID.randomUUID().toString()));
+                TUser user = baseVo.getParam().setUserId(UUID.randomUUID().toString());
+                return testService.getMapper().saveWithTable(baseVo.getTable(), user);
             }
 
         } catch (Exception e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             e.printStackTrace();
         }
-        return testService.getMapper().saveWithTable(baseVo.getTable(), baseVo.getParam());
+        return 0;
     }
 
     @ApiOperation("通过实体对象添加数据")

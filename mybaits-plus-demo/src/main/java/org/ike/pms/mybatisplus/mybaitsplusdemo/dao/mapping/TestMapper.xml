@@ -23,7 +23,7 @@
 
     <insert id="saveBatchWithTable" >
         insert into ${table} values
-        <foreach item="item" collection="list" separator=",">
+        <foreach item="item" collection="coll" separator=",">
             (#{item.userId},#{item.userName},#{item.password},#{item.phone},#{item.age})
         </foreach>
     </insert>
@@ -34,7 +34,7 @@
 
     <delete id="removeByIdsWithTable">
         delete from ${table} where user_id in
-        <foreach item="item" collection="list" open="(" separator="," close=")">
+        <foreach item="item" collection="coll" open="(" separator="," close=")">
             #{item}
         </foreach>
     </delete>
@@ -77,7 +77,7 @@
     </update>
 
     <update id="updateBatchByIdWithTable">
-        <foreach item="item" collection="list" separator=";" close=";">
+        <foreach item="item" collection="coll" separator=";" close=";">
             update ${table}
             <set>
                 <if test="item.userId!=null">
@@ -124,7 +124,7 @@
     </insert>
 
     <insert id="saveOrUpdateBatchWithTable">
-        <foreach collection="list" item="item" index="index" separator=";">
+        <foreach collection="coll" item="item" index="index" separator=";">
             insert into ${table} values
             (#{item.userId},#{item.userName},#{item.password},#{item.phone},#{item.age})
             on duplicate key update

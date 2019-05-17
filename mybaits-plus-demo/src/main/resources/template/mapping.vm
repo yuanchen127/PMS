@@ -48,7 +48,7 @@
 
     <insert id="saveBatchWithTable" >
         insert into \${table} values
-        <foreach item="item" collection="list" separator=",">
+        <foreach item="item" collection="coll" separator=",">
             ($i_insert_values_item.substring(0, $i_insert_values_item.length() - 1))
         </foreach>
     </insert>
@@ -59,7 +59,7 @@
 
     <delete id="removeByIdsWithTable">
         delete from \${table} where ${i_id} in
-        <foreach item="item" collection="list" open="(" separator="," close=")">
+        <foreach item="item" collection="coll" open="(" separator="," close=")">
             #{item}
         </foreach>
     </delete>
@@ -92,7 +92,7 @@
     </update>
 
     <update id="updateBatchByIdWithTable">
-        <foreach item="item" collection="list" separator=";" close=";">
+        <foreach item="item" collection="coll" separator=";" close=";">
             update \${table}
             <set>
                 #foreach($field in $table.fields)
@@ -119,7 +119,7 @@
     </insert>
 
     <insert id="saveOrUpdateBatchWithTable">
-        <foreach collection="list" item="item" index="index" separator=";">
+        <foreach collection="coll" item="item" index="index" separator=";">
             insert into \${table} values
             ($i_insert_values_item.substring(0, $i_insert_values_item.length() - 1))
             on duplicate key update
