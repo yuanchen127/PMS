@@ -1,5 +1,11 @@
 #macro(checkJdbcType $type)
-    #if($type=='INT')INTEGER#else$type#end
+    #set($type_temp = $type)
+    #if($type.length()>0)
+        #if($type_temp.indexOf("(")>=0)
+            #set($type_temp = $type_temp.substring(0, $type_temp.indexOf("(")))
+        #end
+        #if($type_temp=='INT')INTEGER#else$type_temp#end
+    #else$type_temp#end
 #end
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
@@ -27,10 +33,10 @@
                 #end
                 #set($i_id_property_type = ${field.columnType})
                 #set ($i_exist = true)
-        <id column="${field.name}" jdbcType="#checkJdbcType(${field.type.substring(0, ${field.type.indexOf("(")}).toUpperCase()})" property="${field.propertyName}"/>
+        <id column="${field.name}" jdbcType="#checkJdbcType($field.type.toUpperCase())" property="${field.propertyName}"/>
             #else
 ##        <result column="${field.name}" jdbcType="${field.type.substring(0, ${field.type.indexOf("(")}).toUpperCase()}" property="${field.propertyName}"/>
-        <result column="${field.name}" jdbcType="#checkJdbcType(${field.type.substring(0, ${field.type.indexOf("(")}).toUpperCase()})" property="${field.propertyName}"/>
+        <result column="${field.name}" jdbcType="#checkJdbcType($field.type.toUpperCase())" property="${field.propertyName}"/>
             #end
         #end
     </resultMap>
