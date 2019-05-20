@@ -5,7 +5,7 @@
         #if($type_temp.indexOf("(")>=0)
             #set($type_temp = $type_temp.substring(0, $type_temp.indexOf("(")))
         #end
-        #if($!jdbcType.get($!type_temp)=='')$type_temp#else${jdbcType.get($type_temp)}#end
+        #if($jdbcType.containsKey($type_temp))${jdbcType.get($type_temp)}#else$type_temp#end
     #else$type_temp#end
 #end
 <?xml version="1.0" encoding="UTF-8"?>
