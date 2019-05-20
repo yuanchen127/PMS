@@ -19,11 +19,8 @@
     #set ($i_insert_values = "")##新增values
     #set ($i_insert_values_item = "")##批量新增values
     <resultMap id="BaseResultMap" type="${package.Entity}.${table.entityName}">
-        #foreach($field in $table.fields)
-            ##拼接新增values
-            #set ($i_insert_values = $i_insert_values+"#{obj.${field.propertyName}},")
-            #set ($i_insert_values_item = $i_insert_values_item+"#{item.${field.propertyName}},")
-            #if($!field.keyFlag && !$i_exist)
+        #foreach($field in $table.fields)##生成id id标签必须在前面
+            #if($field.keyFlag && !$i_exist)
                 #set($i_id = ${field.name})
                 #set($i_id_property = ${field.propertyName})
                 #if(${field.type}=='INT')
@@ -34,8 +31,13 @@
                 #set($i_id_property_type = ${field.columnType})
                 #set ($i_exist = true)
         <id column="${field.name}" jdbcType="#checkJdbcType($field.type.toUpperCase())" property="${field.propertyName}"/>
-            #else
-##        <result column="${field.name}" jdbcType="${field.type.substring(0, ${field.type.indexOf("(")}).toUpperCase()}" property="${field.propertyName}"/>
+            #end
+        #end
+        #foreach($field in $table.fields)##生成result
+            ##拼接新增values
+            #set ($i_insert_values = $i_insert_values+"#{obj.${field.propertyName}},")
+            #set ($i_insert_values_item = $i_insert_values_item+"#{item.${field.propertyName}},")
+            #if(!$field.keyFlag)
         <result column="${field.name}" jdbcType="#checkJdbcType($field.type.toUpperCase())" property="${field.propertyName}"/>
             #end
         #end
