@@ -27,6 +27,55 @@ public class TestController {
     @Autowired
     private TestService testService;
 
+    @ApiOperation("查询实体")
+    @RequestMapping(value = "count", method = RequestMethod.GET)
+    public int count(@RequestBody Map param) {
+        try {
+            return testService.getMapper().countWithTable((String) param.get("table"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @ApiOperation("查询实体")
+    @RequestMapping(value = "count/param", method = RequestMethod.GET)
+    public int countByParam(@RequestBody Map param) {
+        try {
+            QueryWrapper<TUser> queryWrapper = new QueryWrapper<>();
+            queryWrapper.like("user_id", "test");
+            return testService.getMapper().countWithTable((String) param.get("table"), queryWrapper);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @ApiOperation("查询实体")
+    @RequestMapping(value = "one", method = RequestMethod.GET)
+    public TUser getOne(@RequestBody Map param) {
+        try {
+            return testService.getMapper().getOneWithTable((String)param.get("table"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @ApiOperation("按照条件查询实体")
+    @RequestMapping(value = "one/param", method = RequestMethod.GET)
+    public TUser getOneByParam(@RequestBody Map param) {
+        try {
+            QueryWrapper<TUser> queryWrapper = new QueryWrapper<>();
+            queryWrapper.like("user_id", "test");
+            queryWrapper.select("user_id");
+            return testService.getMapper().getOneWithTable((String) param.get("table"), queryWrapper);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     @ApiOperation("查询列表")
     @RequestMapping(value = "list", method = RequestMethod.GET)
@@ -44,7 +93,7 @@ public class TestController {
         queryWrapper.like("user_id", "test");
         queryWrapper.isNotNull("user_id");
 //        queryWrapper.exists("select user_id from pms.t_user where user_id='test'");
-        queryWrapper.groupBy("user_id");
+//        queryWrapper.groupBy("user_id");
         return testService.getMapper().listWithTable(table, queryWrapper);
     }
 

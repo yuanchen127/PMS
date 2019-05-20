@@ -10,9 +10,17 @@ import java.util.Collection;
 import java.util.List;
 
 public interface WithTableMapper<T> extends BaseMapper<T> {
+    T getOneWithTable(@Param(WTConstants.TABLE) String table);
+
+    T getOneWithTable(@Param(WTConstants.TABLE) String table, @Param(WTConstants.WRAPPER) QueryWrapper<T> queryWrapper);
+
     List<T> listWithTable(@Param(WTConstants.TABLE)String table);
 
     List<T> listWithTable(@Param(WTConstants.TABLE) String table, @Param(WTConstants.WRAPPER) QueryWrapper<T> queryWrapper);
+
+    int countWithTable(@Param(WTConstants.TABLE) String table);
+
+    int countWithTable(@Param(WTConstants.TABLE) String table, @Param(WTConstants.WRAPPER) QueryWrapper<T> queryWrapper);
 
     int saveWithTable(@Param(WTConstants.TABLE)String table,@Param(WTConstants.OBJ) T entity);
 

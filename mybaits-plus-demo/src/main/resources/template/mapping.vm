@@ -35,8 +35,23 @@
         #end
     </resultMap>
 
+    <select id="getOneWithTable" resultMap="BaseResultMap">
+        select * from \${table}
+        <if test="_parameter.containsKey('ew') and ew.customSqlSegment!=null">
+            ${ew.customSqlSegment}
+        </if>
+        limit 0,1
+    </select>
+
     <select id="listWithTable" resultMap="BaseResultMap">
         select * from \${table}
+        <if test="_parameter.containsKey('ew') and ew.customSqlSegment!=null">
+            ${ew.customSqlSegment}
+        </if>
+    </select>
+
+    <select id="countWithTable" resultType="Integer">
+        select count(*) from \${table}
         <if test="_parameter.containsKey('ew') and ew.customSqlSegment!=null">
             ${ew.customSqlSegment}
         </if>
