@@ -32,6 +32,8 @@ public interface WithTableMapper<T> extends BaseMapper<T> {
 
     int removeWithTable(@Param(WTConstants.TABLE)String table, @Param(WTConstants.WRAPPER) QueryWrapper<T> queryWrapper);
 
+    int removeWithTable(@Param(WTConstants.TABLE)String table, @Param(WTConstants.OBJ) T entity);
+
     int updateWithTable(@Param(WTConstants.TABLE)String table, @Param(WTConstants.OBJ)T entity);
 
     int updateWithTable(@Param(WTConstants.TABLE)String table, @Param(WTConstants.OBJ)T entity, @Param(WTConstants.WRAPPER) UpdateWrapper<T> updateWrapper);

@@ -1,4 +1,4 @@
-#set($jdbcType = {"INT":"INTEGER","DATETIME":"DATE"})
+#set($jdbcType = {"INT":"INTEGER","DATETIME":"DATE","MONEY":"NUMERIC"})
 #macro(checkJdbcType $type)
     #set($type_temp = $type)
     #if($type.length()>0)
@@ -90,9 +90,22 @@
 
     <delete id="removeWithTable">
         delete from \${table}
-        <if test="_parameter.containsKey('ew') and ew.customSqlSegment!=null">
-            ${ew.customSqlSegment}
-        </if>
+        <choose>
+            <when test="_parameter.containsKey('obj')">
+                <trim prefix="where" prefixOverrides="and">
+                    #foreach($field in $table.fields)
+                        <if test="obj.${field.propertyName}!=null">
+                            and ${field.name}=#{obj.${field.propertyName}}
+                        </if>
+                    #end
+                </trim>
+            </when>
+            <otherwise>
+                <if test="_parameter.containsKey('ew') and ew.customSqlSegment!=null">
+                    ${ew.customSqlSegment}
+                </if>
+            </otherwise>
+        </choose>
     </delete>
 
     <update id="updateWithTable">

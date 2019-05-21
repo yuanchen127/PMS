@@ -17,6 +17,7 @@
         </if>
         limit 0,1
     </select>
+
     <select id="listWithTable" resultMap="BaseResultMap">
         select * from ${table}
         <if test="_parameter.containsKey('ew') and ew.customSqlSegment!=null">
@@ -31,11 +32,11 @@
         </if>
     </select>
 
-    <insert id="saveWithTable" >
+    <insert id="saveWithTable">
         insert into ${table} values(#{obj.userId},#{obj.userName},#{obj.password},#{obj.phone},#{obj.age})
     </insert>
 
-    <insert id="saveBatchWithTable" >
+    <insert id="saveBatchWithTable">
         insert into ${table} values
         <foreach item="item" collection="coll" separator=",">
             (#{item.userId},#{item.userName},#{item.password},#{item.phone},#{item.age})
@@ -55,9 +56,32 @@
 
     <delete id="removeWithTable">
         delete from ${table}
-        <if test="_parameter.containsKey('ew') and ew.customSqlSegment!=null">
-            ${ew.customSqlSegment}
-        </if>
+        <choose>
+            <when test="_parameter.containsKey('obj')">
+                <trim prefix="where" prefixOverrides="and">
+                    <if test="obj.userId!=null">
+                        and user_id=#{obj.userId}
+                    </if>
+                    <if test="obj.userName!=null">
+                        and user_name=#{obj.userName}
+                    </if>
+                    <if test="obj.password!=null">
+                        and password=#{obj.password}
+                    </if>
+                    <if test="obj.phone!=null">
+                        and phone=#{obj.phone}
+                    </if>
+                    <if test="obj.age!=null">
+                        and age=#{obj.age}
+                    </if>
+                </trim>
+            </when>
+            <otherwise>
+                <if test="_parameter.containsKey('ew') and ew.customSqlSegment!=null">
+                    ${ew.customSqlSegment}
+                </if>
+            </otherwise>
+        </choose>
     </delete>
 
     <update id="updateWithTable">

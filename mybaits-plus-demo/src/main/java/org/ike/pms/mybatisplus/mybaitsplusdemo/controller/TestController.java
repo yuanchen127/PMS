@@ -175,6 +175,22 @@ public class TestController {
         return 0;
     }
 
+    @ApiOperation("通过实体删除数据")
+    @RequestMapping(value = "delete/entity", method = RequestMethod.GET)
+    @Transactional
+    public int removeByEntity(@RequestBody Map map) {
+        try {
+            TUser user = new TUser()
+                    .setUserId("sssuuu")
+                    .setUserName("updateOrUpdate2");
+            return testService.getMapper().removeWithTable((String) map.get("table"), user);
+        } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     @ApiOperation("通过ID更新数据")
     @RequestMapping(value = "update/id", method = RequestMethod.GET)
     @Transactional

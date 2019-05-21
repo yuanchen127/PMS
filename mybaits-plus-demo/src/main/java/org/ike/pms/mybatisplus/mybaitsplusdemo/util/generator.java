@@ -43,7 +43,7 @@ public class generator {
                 .setEntity("model")
                 .setMapper("dao")
                 .setService("service")
-//                .setServiceImpl("service.impl")
+                .setServiceImpl("service.impl")
                 .setXml("dao.mapping");
 
 
