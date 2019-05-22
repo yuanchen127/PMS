@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import io.swagger.annotations.ApiOperation;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.entity.TUser;
+import org.ike.pms.mybatisplus.mybaitsplusdemo.service.ITUserService;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.service.TestService;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.vo.BaseVo;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.vo.TUserBatchVo;
@@ -16,9 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping(value = "test")
@@ -27,11 +26,14 @@ public class TestController {
     @Autowired
     private TestService testService;
 
+    @Autowired
+    private ITUserService itUserService;
+
     @ApiOperation("查询实体")
     @RequestMapping(value = "count", method = RequestMethod.GET)
     public int count(@RequestBody Map param) {
         try {
-            return testService.getMapper().countWithTable((String) param.get("table"));
+//            return testService.getMapper().countWithTable((String) param.get("table"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -44,7 +46,7 @@ public class TestController {
         try {
             QueryWrapper<TUser> queryWrapper = new QueryWrapper<>();
             queryWrapper.like("user_id", "test");
-            return testService.getMapper().countWithTable((String) param.get("table"), queryWrapper);
+//            return testService.getMapper().countWithTable((String) param.get("table"), queryWrapper);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -55,7 +57,8 @@ public class TestController {
     @RequestMapping(value = "one", method = RequestMethod.GET)
     public TUser getOne(@RequestBody Map param) {
         try {
-            return testService.getMapper().getOneWithTable((String)param.get("table"));
+            return testService.getOneWithTable((String) param.get("table"));
+//            return testService.getMapper().getOneWithTable((String)param.get("table"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -69,7 +72,8 @@ public class TestController {
             QueryWrapper<TUser> queryWrapper = new QueryWrapper<>();
             queryWrapper.like("user_id", "test");
             queryWrapper.select("user_id");
-            return testService.getMapper().getOneWithTable((String) param.get("table"), queryWrapper);
+            return testService.getOneWithTable((String) param.get("table"), queryWrapper);
+//            return testService.getMapper().getOneWithTable((String) param.get("table"), queryWrapper);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -81,7 +85,8 @@ public class TestController {
     @RequestMapping(value = "list", method = RequestMethod.GET)
     public List list(@RequestBody Map param) {
         String table = (String) param.get("table");
-        return testService.getMapper().listWithTable(table);
+//        return testService.getMapper().listWithTable(table);
+        return testService.listWithTable(table);
     }
 
     @ApiOperation("按条件查询列表")
@@ -94,24 +99,26 @@ public class TestController {
         queryWrapper.isNotNull("user_id");
 //        queryWrapper.exists("select user_id from pms.t_user where user_id='test'");
 //        queryWrapper.groupBy("user_id");
-        return testService.getMapper().listWithTable(table, queryWrapper);
+//        return testService.getMapper().listWithTable(table, queryWrapper);
+        return testService.listWithTable(table, queryWrapper);
     }
 
     @ApiOperation("通过实体对象添加数据")
     @RequestMapping(value = "save/entity", method = RequestMethod.GET)
     @Transactional
-    public int saveByEntity(@RequestBody BaseVo baseVo) {
+    public boolean saveByEntity(@RequestBody BaseVo baseVo) {
             try {
             if (StringUtils.isEmpty(baseVo.getParam().getUserId())) {
-                TUser user = baseVo.getParam().setUserId(UUID.randomUUID().toString());
-                return testService.getMapper().saveWithTable(baseVo.getTable(), user);
+                TUser user = baseVo.getParam().setUserId(UUID.randomUUID().toString()).setCreatetime(new Date());
+//                return testService.getMapper().saveWithTable(baseVo.getTable(), user);
+                return testService.saveWithTable(baseVo.getTable(), baseVo.getParam());
             }
 
         } catch (Exception e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             e.printStackTrace();
         }
-        return 0;
+        return false;
     }
 
     @ApiOperation("通过实体对象添加数据")
@@ -125,7 +132,7 @@ public class TestController {
                     user.setUserId(UUID.randomUUID().toString());
                 }
             }
-            return testService.getMapper().saveBatchWithTable(batchVo.getTable(),list);
+//            return testService.getMapper().saveBatchWithTable(batchVo.getTable(),list);
         } catch (Exception e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             e.printStackTrace();
@@ -138,7 +145,7 @@ public class TestController {
     @Transactional
     public int removeById(@RequestBody Map<String, String> param) {
         try {
-            return testService.getMapper().removeByIdWithTable(param.get("table"),param.get("id"));
+//            return testService.getMapper().removeByIdWithTable(param.get("table"),param.get("id"));
         } catch (Exception e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             e.printStackTrace();
@@ -152,7 +159,7 @@ public class TestController {
     public int removeByIds(@RequestBody Map map) {
         try {
             List list = (List) map.get("list");
-            return testService.getMapper().removeByIdsWithTable((String) map.get("table"),list);
+//            return testService.getMapper().removeByIdsWithTable((String) map.get("table"),list);
         } catch (Exception e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             e.printStackTrace();
@@ -167,7 +174,7 @@ public class TestController {
         try {
             QueryWrapper<TUser> queryWrapper = new QueryWrapper<>();
 //            queryWrapper.eq("user_id","xml");
-            return testService.getMapper().removeWithTable((String) map.get("table"), queryWrapper);
+//            return testService.getMapper().removeWithTable((String) map.get("table"), queryWrapper);
         } catch (Exception e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             e.printStackTrace();
@@ -181,9 +188,9 @@ public class TestController {
     public int removeByEntity(@RequestBody Map map) {
         try {
             TUser user = new TUser()
-                    .setUserId("sssuuu")
-                    .setUserName("updateOrUpdate2");
-            return testService.getMapper().removeWithTable((String) map.get("table"), user);
+                    .setUserId("test3")
+                    .setAge(23);
+//            return testService.getMapper().removeWithTable((String) map.get("table"), user);
         } catch (Exception e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             e.printStackTrace();
@@ -196,7 +203,7 @@ public class TestController {
     @Transactional
     public int updateByIdWithTable(@RequestBody BaseVo baseVo) {
         try {
-            return testService.getMapper().updateWithTable(baseVo.getTable(), baseVo.getParam());
+//            return testService.getMapper().updateWithTable(baseVo.getTable(), baseVo.getParam());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -210,7 +217,7 @@ public class TestController {
         try {
             UpdateWrapper<TUser> updateWrapper = new UpdateWrapper<>();
             updateWrapper.like("user_id", "test");
-            return testService.getMapper().updateWithTable(baseVo.getTable(), baseVo.getParam(), updateWrapper);
+//            return testService.getMapper().updateWithTable(baseVo.getTable(), baseVo.getParam(), updateWrapper);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -222,7 +229,7 @@ public class TestController {
     @Transactional
     public int updateBatchByIdWithTable(@RequestBody TUserBatchVo batchVo) {
         try {
-            return testService.getMapper().updateBatchByIdWithTable(batchVo.getTable(), batchVo.getList());
+//            return testService.getMapper().updateBatchByIdWithTable(batchVo.getTable(), batchVo.getList());
         } catch (Exception e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             e.printStackTrace();
@@ -233,27 +240,33 @@ public class TestController {
     @ApiOperation("通过ID新增或更新数据")
     @RequestMapping(value = "save_update/id", method = RequestMethod.GET)
     @Transactional
-    public int saveOrUpdateWithTable(@RequestBody BaseVo baseVo) {
+    public boolean saveOrUpdateWithTable(@RequestBody BaseVo baseVo) {
         try {
-            return testService.getMapper().saveOrUpdateWithTable(baseVo.getTable(), baseVo.getParam());
+            return false;
+//            return testService.getMapper().saveOrUpdateWithTable(baseVo.getTable(), baseVo.getParam());
         } catch (Exception e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             e.printStackTrace();
         }
-        return 0;
+        return false;
     }
 
     @ApiOperation("通过ID批量新增或更新数据")
     @RequestMapping(value = "batch/save_update/id", method = RequestMethod.GET)
     @Transactional
-    public int saveOrUpdateBatchWithTable(@RequestBody TUserBatchVo batchVo) {
+    public boolean saveOrUpdateBatchWithTable(@RequestBody TUserBatchVo batchVo) {
         try {
-            return testService.getMapper().saveOrUpdateBatchWithTable(batchVo.getTable(), batchVo.getList());
+            List<TUser> list = new ArrayList<>();
+            list.add(new TUser().setUserId("oooo").setUserName("ooo").setPassword("ooo"));
+            list.add(new TUser().setUserId("oooo1").setUserName("ooo1").setPassword("ooo1"));
+//            itUserService.saveOrUpdateBatch(list);
+            return testService.saveBatchWithTable(batchVo.getTable(), list);
+//            return testService.getMapper().saveOrUpdateBatchWithTable(batchVo.getTable(), batchVo.getList());
         } catch (Exception e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             e.printStackTrace();
         }
-        return 0;
+        return false;
     }
 
 

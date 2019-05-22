@@ -53,7 +53,7 @@ public class generator {
                 .setColumnNaming(NamingStrategy.underline_to_camel)
                 .setEntityLombokModel(true)
                 .setRestControllerStyle(true)
-                .setEntityTableFieldAnnotationEnable(true)
+//                .setEntityTableFieldAnnotationEnable(true)
                 .setInclude("t_user")
 //                .setSuperEntityColumns("id")
                 .setControllerMappingHyphenStyle(true)
@@ -69,7 +69,8 @@ public class generator {
         String entityTemplate = "/template/entity.vm";
         String serviceTemplate = "/template/service.vm";
         String serviceImplTemplate = "/template/serviceImpl.vm";
-        String mappingTemplate = "/template/mapping.vm";
+//        String mappingTemplate = "/template/mapping.vm";
+        String mappingTemplate = "/template/test.vm";
         fileOutConfigList.add(new FileOutConfig(entityTemplate) {
             @Override
             public String outputFile(TableInfo tableInfo) {

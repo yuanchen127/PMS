@@ -1,0 +1,12 @@
+#foreach($field in $table.fields)
+    convert:$field.convert
+    keyFlag:$field.keyFlag
+    keyIdentityFlag:$field.keyIdentityFlag
+    name:$field.name
+    type:$field.type
+    propertyName:$field.propertyName
+    columnType:$field.columnType
+    comment:$field.comment
+    fill:$field.fill
+    ==============================================
+#end
