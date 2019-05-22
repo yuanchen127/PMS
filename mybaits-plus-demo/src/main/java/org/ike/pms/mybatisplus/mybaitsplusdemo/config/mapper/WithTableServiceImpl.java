@@ -276,7 +276,7 @@ public class WithTableServiceImpl<M extends WithTableMapper<T>, T> extends Servi
                 tableInfo.getFieldList().stream().filter(fieldInfo -> columnsList.contains(fieldInfo.getColumn())).forEach(field -> {
                     queryWrapper.eq(field.getColumn(),ReflectionKit.getMethodValue(cls, entity, field.getProperty()));
                 });
-                ParamMap<Object> param = new ParamMap();
+                ParamMap<Object> param = new ParamMap<>();
                 param.put(WTConstants.OBJ, entity);
                 param.put(WTConstants.TABLE, table);
                 if (!StringUtils.checkValNull(idVal) && !Objects.isNull(this.getOneWithTable(table, queryWrapper))) {
