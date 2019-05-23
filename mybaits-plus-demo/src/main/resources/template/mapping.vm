@@ -44,6 +44,10 @@
         #end
     </resultMap>
 
+    <select id="getByIdWithTable" resultMap="BaseResultMap">
+        select * from \${table} where $i_id=#{id}
+    </select>
+
     <select id="getOneWithTable" resultMap="BaseResultMap">
         select * from \${table}
         <if test="_parameter.containsKey('ew') and ew.customSqlSegment!=null">

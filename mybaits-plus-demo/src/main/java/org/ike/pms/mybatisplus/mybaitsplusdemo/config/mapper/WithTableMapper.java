@@ -22,7 +22,7 @@ public interface WithTableMapper<T> extends BaseMapper<T> {
 
     int countWithTable(@Param(WTConstants.TABLE) String table);
 
-    int countWithTable(@Param(WTConstants.TABLE) String table, @Param(WTConstants.WRAPPER) QueryWrapper<T> queryWrapper);
+    int countWithTable(@Param(WTConstants.TABLE) String table, @Param(WTConstants.WRAPPER) Wrapper<T> queryWrapper);
 
     int saveWithTable(@Param(WTConstants.TABLE)String table,@Param(WTConstants.OBJ) T entity);
 

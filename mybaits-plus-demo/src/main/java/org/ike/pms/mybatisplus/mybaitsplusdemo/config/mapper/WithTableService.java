@@ -26,12 +26,12 @@ public interface WithTableService<T> extends IService<T> {
         return countWithTable(table, new QueryWrapper<>());
     }
 
-    int countWithTable(String table, QueryWrapper<T> queryWrapper);
+    int countWithTable(String table, Wrapper<T> queryWrapper);
 
     boolean saveWithTable(String table, T entity);
 
     default boolean saveBatchWithTable(String table, Collection<T> list) {
-        return saveBatchWithTable(table, list);
+        return this.saveBatchWithTable(table, list, 1000);
     }
     boolean saveBatchWithTable(String table, Collection<T> list, int batchSize);
 
@@ -57,15 +57,17 @@ public interface WithTableService<T> extends IService<T> {
 
     boolean saveOrUpdateWithTable(String table, T entity, Wrapper<T> updateWrapper);
 
+    boolean saveOrUpdateWithTable(String table, T entity, Collection<String> idList);
+
     default boolean saveOrUpdateBatchByIdWithTable(String table, Collection<T> entityList) {
         return this.saveOrUpdateBatchByIdWithTable(table, entityList, 1000);
     }
 
     boolean saveOrUpdateBatchByIdWithTable(String table, Collection<T> entityList, int batchSize);
 
-    default boolean saveOrUpdateBatchWithTable(String table, Collection<T> entityList,Collection<String> columnsList) {
-        return saveOrUpdateBatchWithTable(table, entityList, columnsList,1000);
+    default boolean saveOrUpdateBatchWithTable(String table, Collection<T> entityList,Collection<String> idList) {
+        return saveOrUpdateBatchWithTable(table, entityList, idList,1000);
     }
 
-    boolean saveOrUpdateBatchWithTable(String table, Collection<T> entityList,Collection<String> columnsList, int batchSize);
+    boolean saveOrUpdateBatchWithTable(String table, Collection<T> entityList,Collection<String> idList, int batchSize);
 }

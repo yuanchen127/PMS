@@ -53,7 +53,7 @@ public class WithTableServiceImpl<M extends WithTableMapper<T>, T> extends Servi
     }
 
     @Override
-    public int countWithTable(String table, QueryWrapper<T> queryWrapper) {
+    public int countWithTable(String table, Wrapper<T> queryWrapper) {
         return this.withTableMapper.countWithTable(table, queryWrapper);
     }
 
@@ -145,7 +145,7 @@ public class WithTableServiceImpl<M extends WithTableMapper<T>, T> extends Servi
             for (Iterator<T> var7 = entityList.iterator(); var7.hasNext(); ++i) {
                 T anEntityList = var7.next();
                 ParamMap<Object> param = new ParamMap();
-                param.put(WTConstants.COLLECTION, anEntityList);
+                param.put(WTConstants.OBJ, anEntityList);
                 param.put(WTConstants.TABLE, table);
                 batchSqlSession.update(sqlStatement, param);
                 if (i >= 1 && i % batchSize == 0) {
@@ -197,7 +197,26 @@ public class WithTableServiceImpl<M extends WithTableMapper<T>, T> extends Servi
             Class<?> cls = entity.getClass();
             TableInfo tableInfo = TableInfoHelper.getTableInfo(cls);
             Assert.notNull(tableInfo, "error: can not execute. because can not find cache of TableInfo for entity!", new Object[0]);
-            return updateWrapper.nonEmptyOfWhere() && !Objects.isNull(this.getOneWithTable(table, updateWrapper)) ? this.updateWithTable(table, entity, updateWrapper) : this.saveWithTable(table, entity);
+            return updateWrapper.nonEmptyOfWhere() && this.countWithTable(table, updateWrapper)>0 ? this.updateWithTable(table, entity, updateWrapper) : this.saveWithTable(table, entity);
+        }
+    }
+
+    @Override
+    public boolean saveOrUpdateWithTable(String table, T entity, Collection<String> idList) {
+        if (null == entity) {
+            return false;
+        } else {
+            Class<?> cls = entity.getClass();
+            TableInfo tableInfo = TableInfoHelper.getTableInfo(cls);
+            Assert.notNull(tableInfo, "error: can not execute. because can not find cache of TableInfo for entity!", new Object[0]);
+            QueryWrapper<T> queryWrapper = new QueryWrapper<>();
+            tableInfo.getFieldList().stream().filter(fieldInfo -> idList.contains(fieldInfo.getColumn())).forEach(field -> {
+                queryWrapper.eq(field.getColumn(),ReflectionKit.getMethodValue(cls, entity, field.getProperty()));
+            });
+            if (!idList.isEmpty() && idList.contains(tableInfo.getKeyColumn())) {
+                queryWrapper.eq(tableInfo.getKeyColumn(),ReflectionKit.getMethodValue(cls, entity, tableInfo.getKeyProperty()));
+            }
+            return queryWrapper.nonEmptyOfWhere() && this.countWithTable(table, queryWrapper)>0 ? this.updateWithTable(table, entity, queryWrapper) : this.saveWithTable(table, entity);
         }
     }
 
@@ -255,7 +274,7 @@ public class WithTableServiceImpl<M extends WithTableMapper<T>, T> extends Servi
     }
 
     @Override
-    public boolean saveOrUpdateBatchWithTable(String table, Collection<T> entityList, Collection<String> columnsList, int batchSize) {
+    public boolean saveOrUpdateBatchWithTable(String table, Collection<T> entityList, Collection<String> idList, int batchSize) {
         Assert.notEmpty(entityList, "error: entityList must not be empty", new Object[0]);
         Class<?> cls = this.currentModelClass();
         TableInfo tableInfo = TableInfoHelper.getTableInfo(cls);
@@ -273,13 +292,16 @@ public class WithTableServiceImpl<M extends WithTableMapper<T>, T> extends Servi
                 Object idVal = ReflectionKit.getMethodValue(cls, entity, keyProperty);
 
                 QueryWrapper<T> queryWrapper = new QueryWrapper<>();
-                tableInfo.getFieldList().stream().filter(fieldInfo -> columnsList.contains(fieldInfo.getColumn())).forEach(field -> {
+                tableInfo.getFieldList().stream().filter(fieldInfo -> idList.contains(fieldInfo.getColumn())).forEach(field -> {
                     queryWrapper.eq(field.getColumn(),ReflectionKit.getMethodValue(cls, entity, field.getProperty()));
                 });
+                if (!idList.isEmpty() && idList.contains(tableInfo.getKeyColumn())) {
+                    queryWrapper.eq(tableInfo.getKeyColumn(),ReflectionKit.getMethodValue(cls, entity, tableInfo.getKeyProperty()));
+                }
                 ParamMap<Object> param = new ParamMap<>();
                 param.put(WTConstants.OBJ, entity);
                 param.put(WTConstants.TABLE, table);
-                if (!StringUtils.checkValNull(idVal) && !Objects.isNull(this.getOneWithTable(table, queryWrapper))) {
+                if (!StringUtils.checkValNull(idVal) && this.countWithTable(table, queryWrapper)>0) {
                     param.put(WTConstants.WRAPPER, queryWrapper);
                     batchSqlSession.update(this.sqlStatement(WTSqlMethod.WT_UPDATE_BY_ID), param);
                 } else {
