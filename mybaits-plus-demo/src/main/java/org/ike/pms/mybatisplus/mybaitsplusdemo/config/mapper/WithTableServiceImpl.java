@@ -48,7 +48,7 @@ public class WithTableServiceImpl<M extends WithTableMapper<T>, T> extends Servi
     }
 
     @Override
-    public List<T> listWithTable(String table, QueryWrapper<T> queryWrapper) {
+    public List<T> listWithTable(String table, Wrapper<T> queryWrapper) {
         return this.withTableMapper.listWithTable(table, queryWrapper);
     }
 
@@ -113,7 +113,7 @@ public class WithTableServiceImpl<M extends WithTableMapper<T>, T> extends Servi
     }
 
     @Override
-    public boolean removeWithTable(String table, QueryWrapper<T> queryWrapper) {
+    public boolean removeWithTable(String table, Wrapper<T> queryWrapper) {
         return SqlHelper.retBool(this.withTableMapper.removeWithTable(table, queryWrapper));
     }
 

@@ -18,7 +18,7 @@ public interface WithTableMapper<T> extends BaseMapper<T> {
 
     List<T> listWithTable(@Param(WTConstants.TABLE)String table);
 
-    List<T> listWithTable(@Param(WTConstants.TABLE) String table, @Param(WTConstants.WRAPPER) QueryWrapper<T> queryWrapper);
+    List<T> listWithTable(@Param(WTConstants.TABLE) String table, @Param(WTConstants.WRAPPER) Wrapper<T> queryWrapper);
 
     int countWithTable(@Param(WTConstants.TABLE) String table);
 
@@ -32,7 +32,7 @@ public interface WithTableMapper<T> extends BaseMapper<T> {
 
     int removeByIdsWithTable(@Param(WTConstants.TABLE)String table,@Param(WTConstants.COLLECTION)Collection<? extends Serializable> list);
 
-    int removeWithTable(@Param(WTConstants.TABLE)String table, @Param(WTConstants.WRAPPER) QueryWrapper<T> queryWrapper);
+    int removeWithTable(@Param(WTConstants.TABLE)String table, @Param(WTConstants.WRAPPER) Wrapper<T> queryWrapper);
 
     int removeWithTable(@Param(WTConstants.TABLE)String table, @Param(WTConstants.OBJ) T entity);
 

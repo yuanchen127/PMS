@@ -2,7 +2,6 @@ package org.ike.pms.mybatisplus.mybaitsplusdemo.config.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.io.Serializable;
@@ -20,7 +19,7 @@ public interface WithTableService<T> extends IService<T> {
 
     List<T> listWithTable(String table);
 
-    List<T> listWithTable(String table, QueryWrapper<T> queryWrapper);
+    List<T> listWithTable(String table, Wrapper<T> queryWrapper);
 
     default int countWithTable(String table) {
         return countWithTable(table, new QueryWrapper<>());
@@ -39,7 +38,7 @@ public interface WithTableService<T> extends IService<T> {
 
     boolean removeByIdsWithTable(String table, Collection<? extends Serializable> idList);
 
-    boolean removeWithTable(String table, QueryWrapper<T> queryWrapper);
+    boolean removeWithTable(String table, Wrapper<T> queryWrapper);
 
     boolean removeWithTable(String table, T entity);
 
