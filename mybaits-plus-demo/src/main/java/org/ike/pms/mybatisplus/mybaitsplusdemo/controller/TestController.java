@@ -3,6 +3,8 @@ package org.ike.pms.mybatisplus.mybaitsplusdemo.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import io.swagger.annotations.ApiOperation;
+import org.ike.pms.mybatisplus.mybaitsplusdemo.dao.TUserMapper;
+import org.ike.pms.mybatisplus.mybaitsplusdemo.dao.TestMapper;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.entity.TUser;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.service.ITUserService;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.service.TestService;
@@ -28,6 +30,15 @@ public class TestController {
 
     @Autowired
     private ITUserService itUserService;
+
+    @RequestMapping(value = "provider", method = RequestMethod.GET)
+    void test() {
+        QueryWrapper<TUser> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id", "qwe");
+
+//        EntityWrapper<TUser> wrapper = new EntityWrapper<>();
+        testService.getMapper().test(queryWrapper);
+    }
 
     @ApiOperation("统计表数据")
     @RequestMapping(value = "count", method = RequestMethod.GET)
@@ -111,7 +122,7 @@ public class TestController {
     public boolean saveByEntity(@RequestBody BaseVo baseVo) {
             try {
             if (StringUtils.isEmpty(baseVo.getParam().getUserId())) {
-                TUser user = baseVo.getParam().setUserId(UUID.randomUUID().toString()).setCreatetime(new Date());
+                TUser user = baseVo.getParam().setUserId(UUID.randomUUID().toString());
 //                return testService.getMapper().saveWithTable(baseVo.getTable(), user);
                 return testService.saveWithTable(baseVo.getTable(), baseVo.getParam());
             }

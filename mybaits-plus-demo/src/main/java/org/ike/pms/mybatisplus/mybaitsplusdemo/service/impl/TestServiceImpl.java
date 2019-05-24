@@ -8,5 +8,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TestServiceImpl extends WithTableServiceImpl<TestMapper, TUser> implements TestService {
-
+    @Override
+    public TestMapper getMapper() {
+        return this.baseMapper;
+    }
 }

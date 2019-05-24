@@ -1,11 +1,18 @@
 package org.ike.pms.mybatisplus.mybaitsplusdemo.dao;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import org.apache.ibatis.annotations.SelectProvider;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.config.mapper.WithTableMapper;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.entity.TUser;
+import org.ike.pms.mybatisplus.mybaitsplusdemo.provider.UserProvider;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
 
 @Component
 public interface TestMapper extends WithTableMapper<TUser> {
+    @SelectProvider(type = UserProvider.class, method = "selectProvider")
+    Map test(QueryWrapper<TUser> wrapper);
 
     /**
      * 测试模板sql

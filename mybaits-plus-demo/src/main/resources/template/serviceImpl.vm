@@ -1,9 +1,9 @@
 package ${package.ServiceImpl};
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import ${package.Mapper}.$table.mapperName;
 import ${package.Entity}.$table.entityName;
 import ${package.Service}.$table.serviceName;
+import ${cfg.WithTable.serviceImpl};
 import org.springframework.stereotype.Service;
 /**
 *
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 */
 
 @Service
-public class $table.serviceImplName extends ServiceImpl<$table.mapperName, $table.entityName> implements $table.serviceName{
+public class $table.serviceImplName extends WithTableServiceImpl<$table.mapperName, $table.entityName> implements $table.serviceName{
 
     public $table.mapperName getMapper() {
         return this.baseMapper;

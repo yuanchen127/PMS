@@ -6,12 +6,15 @@ import com.baomidou.mybatisplus.generator.AutoGenerator;
 import com.baomidou.mybatisplus.generator.InjectionConfig;
 import com.baomidou.mybatisplus.generator.config.*;
 import com.baomidou.mybatisplus.generator.config.builder.ConfigBuilder;
+import com.baomidou.mybatisplus.generator.config.converts.MySqlTypeConvert;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
+import com.baomidou.mybatisplus.generator.config.rules.DbColumnType;
 import com.baomidou.mybatisplus.generator.config.rules.FileType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class generator {
@@ -34,11 +37,23 @@ public class generator {
                 // dsc.setSchemaName("public");
                 .setDriverName("com.mysql.jdbc.Driver")
                 .setUsername("root")
-                .setPassword("123456");
+                .setPassword("123456")
+                .setTypeConvert(new MySqlTypeConvert(){
+                    @Override
+                    public DbColumnType processTypeConvert(GlobalConfig globalConfig, String fieldType) {
+                        String type = fieldType.toLowerCase();
+                        if (type.contains("money")) {
+                            return DbColumnType.DOUBLE;
+                        } else if (type.contains("time")) {
+                            return DbColumnType.DATE;
+                        }
+                        return (DbColumnType) super.processTypeConvert(globalConfig, fieldType);
+                    }
+                });
 
         // 包配置
-        PackageConfig packageConfig = new PackageConfig()
-                .setParent("org.ike.pms.mybatisplus.mybaitsplusdemo.template")
+        PackageConfig packageConfig = new PackageConfig();
+        packageConfig.setParent("org.ike.pms.mybatisplus.mybaitsplusdemo.template")
                 .setController("controller")
                 .setEntity("model")
                 .setMapper("dao")
@@ -69,8 +84,8 @@ public class generator {
         String entityTemplate = "/template/entity.vm";
         String serviceTemplate = "/template/service.vm";
         String serviceImplTemplate = "/template/serviceImpl.vm";
-//        String mappingTemplate = "/template/mapping.vm";
-        String mappingTemplate = "/template/test.vm";
+        String mappingTemplate = "/template/mapping.vm";
+        String mapperTemplate = "/template/mapper.vm";
         fileOutConfigList.add(new FileOutConfig(entityTemplate) {
             @Override
             public String outputFile(TableInfo tableInfo) {
@@ -99,6 +114,13 @@ public class generator {
                         + "/" + tableInfo.getXmlName()).replaceAll("\\.","/") + StringPool.DOT_XML;
             }
         });
+        fileOutConfigList.add(new FileOutConfig(mapperTemplate) {
+            @Override
+            public String outputFile(TableInfo tableInfo) {
+                return (globalConfig.getOutputDir()+packageConfig.getParent()+"/"+packageConfig.getMapper()
+                        + "/" + tableInfo.getMapperName()).replaceAll("\\.","/") + StringPool.DOT_JAVA;
+            }
+        });
 
         injectionConfig.setFileOutConfigList(fileOutConfigList)
                         .setFileCreate(new IFileCreate() {
@@ -122,13 +144,26 @@ public class generator {
                                 //不存在的文件都需要创建
                                 return  true;
                             }
-                        });
+
+
+                        })
+                        .setMap(new HashMap<String,Object>(){{
+                            put("project",new HashMap<String, Object>(){{
+                                put("base_package", packageConfig.getParent());
+                            }});
+                            put("WithTable", new HashMap<String, Object>(){{
+                                put("service", packageConfig.getParent()+".config.mapper.WithTableService");
+                                put("serviceImpl", packageConfig.getParent() + ".config.mapper.WithTableServiceImpl");
+                                put("mapper", packageConfig.getParent() + ".config.mapper.WithTableMapper");
+                            }});
+                        }});
 
         TemplateConfig templateConfig = new TemplateConfig();
         templateConfig.setEntity(entityTemplate)
                 .setXml(mappingTemplate)
                 .setService(serviceTemplate)
-                .setServiceImpl(serviceImplTemplate);
+                .setServiceImpl(serviceImplTemplate)
+                .setMapper(mapperTemplate);
 
         autoGenerator.setStrategy(strategyConfig)
                 .setGlobalConfig(globalConfig)

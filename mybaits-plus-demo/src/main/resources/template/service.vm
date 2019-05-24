@@ -1,15 +1,15 @@
 package ${package.Service};
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import ${package.Mapper}.$table.mapperName;
 import ${package.Entity}.$table.entityName;
+import ${cfg.WithTable.service};
 
 /**
 *
 * @author $author
 * @since $date
 */
-public interface $table.serviceName extends IService<$table.entityName>{
+public interface $table.serviceName extends WithTableService<$table.entityName>{
 
     $table.mapperName getMapper();
 

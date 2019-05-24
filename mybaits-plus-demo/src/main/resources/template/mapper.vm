@@ -1,0 +1,15 @@
+package ${package.Mapper};
+
+
+import ${package.Entity}.$table.entityName;
+import ${cfg.WithTable.mapper};
+
+/**
+*
+* @author $author
+* @since $date
+*/
+
+public interface $table.mapperName extends WithTableMapper<$table.entityName> {
+
+}
