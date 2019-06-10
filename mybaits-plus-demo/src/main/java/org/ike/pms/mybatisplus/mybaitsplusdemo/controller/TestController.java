@@ -2,9 +2,8 @@ package org.ike.pms.mybatisplus.mybaitsplusdemo.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.ApiOperation;
-import org.ike.pms.mybatisplus.mybaitsplusdemo.dao.TUserMapper;
-import org.ike.pms.mybatisplus.mybaitsplusdemo.dao.TestMapper;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.entity.TUser;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.service.ITUserService;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.service.TestService;
@@ -14,10 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -32,12 +28,18 @@ public class TestController {
     private ITUserService itUserService;
 
     @RequestMapping(value = "provider", method = RequestMethod.GET)
-    void test() {
-        QueryWrapper<TUser> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_id", "qwe");
+    List<TUser> test(@RequestBody Map params) {
 
-//        EntityWrapper<TUser> wrapper = new EntityWrapper<>();
-        testService.getMapper().test(queryWrapper);
+        QueryWrapper<TUser> wrapper = new QueryWrapper<TUser>();
+        QueryWrapper<TUser> wrapper1 = new QueryWrapper<TUser>();
+        wrapper.select("user_id,user_name");
+        wrapper.eq("user_id","tt");
+        wrapper.orderByAsc("age");
+        wrapper.groupBy("user_id");
+//        wrapper.and(wrapper1->{});
+
+
+        return testService.getMapper().testWrapper(new Page(1,2),params.get("table").toString(), wrapper);
     }
 
     @ApiOperation("统计表数据")
@@ -95,11 +97,19 @@ public class TestController {
 
 
     @ApiOperation("查询列表")
-    @RequestMapping(value = "list", method = RequestMethod.GET)
-    public List list(@RequestBody Map param) {
+    @RequestMapping(value = {"list", "list/{pageNum}/{pageSize}"}, method = RequestMethod.GET)
+    public Page<Map> list(@RequestBody Map param, @PathVariable(required = false) Integer pageNum, @PathVariable(required = false) Integer pageSize) {
         String table = (String) param.get("table");
 //        return testService.getMapper().listWithTable(table);
-        return testService.listWithTable(table);
+//        return testService.listWithTable(table);
+        Page<Map> page;
+        if (Objects.nonNull(pageNum) && Objects.nonNull(pageSize)) {
+            page = new Page<>(pageNum, pageSize);
+        } else {
+            page = new Page<>();
+        }
+
+        return testService.getMapper().listWithTable(page, table);
     }
 
     @ApiOperation("按条件查询列表")
@@ -244,6 +254,23 @@ public class TestController {
         return false;
     }
 
+    @ApiOperation("通过wrapper更新数据")
+    @RequestMapping(value = "update/wrapper", method = RequestMethod.GET)
+    @Transactional
+    public int UpdateByWrapperWithTable(@RequestBody BaseVo baseVo) {
+        try {
+//            return testService.getMapper().saveOrUpdateWithTable(baseVo.getTable(), baseVo.getParam());
+            UpdateWrapper<TUser> updateWrapper = new UpdateWrapper<>();
+            updateWrapper.set("age", "123");
+            updateWrapper.eq("user_id", "tt");
+            return testService.getMapper().updateWrapper(baseVo.getTable(), updateWrapper);
+        } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     @ApiOperation("通过ID批量更新数据")
     @RequestMapping(value = "batch/update/id", method = RequestMethod.GET)
     @Transactional
@@ -271,6 +298,8 @@ public class TestController {
         }
         return false;
     }
+
+
 
     @ApiOperation("通过ID批量新增或更新数据")
     @RequestMapping(value = "batch/save_update/id", method = RequestMethod.GET)

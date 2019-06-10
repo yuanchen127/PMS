@@ -91,6 +91,10 @@
             </otherwise>
         </choose>
     </delete>
+    
+    <update id="updateWrapper">
+        update ${table} ${ew.customSqlSegment}
+    </update>
 
     <update id="updateWithTable">
         update ${table}

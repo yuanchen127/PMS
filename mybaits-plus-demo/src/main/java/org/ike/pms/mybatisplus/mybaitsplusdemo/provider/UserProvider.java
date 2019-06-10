@@ -1,7 +1,11 @@
 package org.ike.pms.mybatisplus.mybaitsplusdemo.provider;
 
+import ch.qos.logback.core.joran.conditional.Condition;
+import com.alibaba.druid.stat.TableStat;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.catalina.valves.rewrite.RewriteCond;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.jdbc.SQL;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.entity.TUser;
@@ -43,5 +47,14 @@ public class UserProvider {
 //            WHERE("user_name='"+name+"' and password='"+password+"'");
 //        }}.toString();
 //        return sql;
+    }
+
+    public String testWrapper(Page page, @Param("table") String table,@Param("ew")Wrapper<TUser> wrapper) {
+        return new SQL() {{
+            SELECT(wrapper.getSqlSelect());
+            FROM(table);
+        }
+        }.toString()+" where "+wrapper.getSqlSegment();
+
     }
 }
