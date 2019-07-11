@@ -8,6 +8,7 @@ import org.ike.pms.mybatisplus.mybaitsplusdemo.config.MultiDatasource.Ike;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.dao.TUserMapper;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.entity.TUser;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.service.ITUserService;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

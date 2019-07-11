@@ -1,15 +1,14 @@
 package org.ike.pms.mybatisplus.mybaitsplusdemo.dao;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.conditions.query.Query;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import javafx.scene.control.Pagination;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.config.mapper.WithTableMapper;
+import org.ike.pms.mybatisplus.mybaitsplusdemo.config.provider.SqlProviderGenerator;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.entity.TUser;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.provider.UserProvider;
 import org.springframework.stereotype.Component;
@@ -54,5 +53,8 @@ public interface TestMapper extends WithTableMapper<TUser> {
 
     @SelectProvider(type = UserProvider.class, method = "testWrapper")
     List<TUser> testWrapper(Page page, @Param("table") String table, @Param("ew") QueryWrapper<TUser> wrapper);
+
+    @SelectProvider(type = SqlProviderGenerator.class, method = "list")
+    List<Map> ikeList(@Param("table") String table, @Param("ew") Wrapper<TUser> wrapper);
 
 }

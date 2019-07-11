@@ -13,6 +13,7 @@ import org.apache.ibatis.type.JdbcType;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.config.MultiDatasource.DataSourceEnum;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.config.MultiDatasource.MultiDataSourceTransactionFactory;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.config.MultiDatasource.MultipleDataSource;
+import org.ike.pms.mybatisplus.mybaitsplusdemo.config.interceptor.ExecutorInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -39,10 +40,13 @@ public class MybatisPlusConfig {
     private Environment env;
 
     @Bean
+    public ExecutorInterceptor executorInterceptor() {
+        return new ExecutorInterceptor();
+    }
+
+    @Bean
     public PaginationInterceptor paginationInterceptor(){
-        PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
-//        paginationInterceptor.
-        return paginationInterceptor;
+        return new PaginationInterceptor();
     }
 
     @Bean
@@ -114,8 +118,10 @@ public class MybatisPlusConfig {
         configuration.setCacheEnabled(false);
         sqlSessionFactory.setConfiguration(configuration);
         sqlSessionFactory.setPlugins(new Interceptor[]{ //PerformanceInterceptor(),OptimisticLockerInterceptor()
-                paginationInterceptor() //添加分页功能
+                paginationInterceptor(), //添加分页功能
+                executorInterceptor()
         });
+
         return sqlSessionFactory.getObject();
 //        SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 //        sqlSessionFactoryBean.setDataSource(multipleDataSource(db1(env), db2(env)));

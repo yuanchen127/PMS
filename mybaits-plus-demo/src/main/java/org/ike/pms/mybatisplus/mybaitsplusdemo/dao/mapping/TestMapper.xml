@@ -9,6 +9,8 @@
         <result column="phone" jdbcType="VARCHAR" property="phone"/>
         <result column="age" jdbcType="INTEGER" property="age"/>
         <result column="createtime" jdbcType="DATE" property="createtime"/>
+        <result column="date" jdbcType="DATE" property="date"/>
+        <result column="time" jdbcType="TIME" property="time"/>
     </resultMap>
 
     <select id="getByIdWithTable" resultMap="BaseResultMap">
@@ -38,13 +40,13 @@
     </select>
 
     <insert id="saveWithTable">
-        insert into ${table} values(#{obj.userId},#{obj.userName},#{obj.password},#{obj.phone},#{obj.age},#{obj.createtime})
+        insert into ${table} values(#{obj.userId},#{obj.userName},#{obj.password},#{obj.phone},#{obj.age},#{obj.createtime},#{obj.date},#{obj.time})
     </insert>
 
     <insert id="saveBatchWithTable">
         insert into ${table} values
         <foreach item="item" collection="coll" separator=",">
-            (#{item.userId},#{item.userName},#{item.password},#{item.phone},#{item.age},#{item.createtime})
+            (#{item.userId},#{item.userName},#{item.password},#{item.phone},#{item.age},#{item.createtime},#{item.date},#{item.time})
         </foreach>
     </insert>
 
@@ -82,6 +84,12 @@
                     <if test="obj.createtime!=null">
                         and createtime=#{obj.createtime}
                     </if>
+                    <if test="obj.date!=null">
+                        and date=#{obj.date}
+                    </if>
+                    <if test="obj.time!=null">
+                        and time=#{obj.time}
+                    </if>
                 </trim>
             </when>
             <otherwise>
@@ -91,10 +99,6 @@
             </otherwise>
         </choose>
     </delete>
-    
-    <update id="updateWrapper">
-        update ${table} ${ew.customSqlSegment}
-    </update>
 
     <update id="updateWithTable">
         update ${table}
@@ -116,6 +120,12 @@
             </if>
             <if test="obj.createtime!=null">
                 createtime=#{obj.createtime},
+            </if>
+            <if test="obj.date!=null">
+                date=#{obj.date},
+            </if>
+            <if test="obj.time!=null">
+                time=#{obj.time},
             </if>
         </set>
         <choose>
@@ -151,6 +161,12 @@
                 <if test="item.createtime!=null">
                     createtime=#{item.createtime},
                 </if>
+                <if test="item.date!=null">
+                    date=#{item.date},
+                </if>
+                <if test="item.time!=null">
+                    time=#{item.time},
+                </if>
             </set>
             where user_id=#{item.userId}
         </foreach>
@@ -158,7 +174,7 @@
 
     <insert id="saveOrUpdateWithTable">
         insert into ${table} values
-        (#{obj.userId},#{obj.userName},#{obj.password},#{obj.phone},#{obj.age},#{obj.createtime})
+        (#{obj.userId},#{obj.userName},#{obj.password},#{obj.phone},#{obj.age},#{obj.createtime},#{obj.date},#{obj.time})
         on duplicate key update
         <trim prefix="" suffixOverrides=",">
             <if test="obj.userId!=null">
@@ -179,13 +195,19 @@
             <if test="obj.createtime!=null">
                 createtime =values(createtime),
             </if>
+            <if test="obj.date!=null">
+                date =values(date),
+            </if>
+            <if test="obj.time!=null">
+                time =values(time),
+            </if>
         </trim>
     </insert>
 
     <insert id="saveOrUpdateBatchWithTable">
         <foreach collection="coll" item="item" index="index" separator=";">
             insert into ${table} values
-            (#{item.userId},#{item.userName},#{item.password},#{item.phone},#{item.age},#{item.createtime})
+            (#{item.userId},#{item.userName},#{item.password},#{item.phone},#{item.age},#{item.createtime},#{item.date},#{item.time})
             on duplicate key update
             <trim prefix="" suffixOverrides=",">
                 <if test="item.userId!=null">
@@ -205,6 +227,12 @@
                 </if>
                 <if test="item.createtime!=null">
                     createtime =values(createtime),
+                </if>
+                <if test="item.date!=null">
+                    date =values(date),
+                </if>
+                <if test="item.time!=null">
+                    time =values(time),
                 </if>
             </trim>
         </foreach>

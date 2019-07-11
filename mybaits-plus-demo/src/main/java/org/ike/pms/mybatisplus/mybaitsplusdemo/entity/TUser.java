@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.ike.pms.mybatisplus.mybaitsplusdemo.config.MultiDatasource.Ike;
+import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -22,6 +24,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
+@Component
 public class TUser implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -43,6 +46,12 @@ public class TUser implements Serializable {
     private Integer age;
 
     @TableField("createtime")
-    private Date createtime;
+    private String createtime;
+
+    @TableField("date")
+    private String date;
+
+    @TableField("time")
+    private String time;
 
 }

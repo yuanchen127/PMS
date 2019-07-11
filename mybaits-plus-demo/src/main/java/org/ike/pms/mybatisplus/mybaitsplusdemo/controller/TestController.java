@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.ApiOperation;
+import org.ike.pms.mybatisplus.mybaitsplusdemo.config.common.SpringContext;
+import org.ike.pms.mybatisplus.mybaitsplusdemo.config.interceptor.ExecutorInterceptor;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.entity.TUser;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.service.ITUserService;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.service.TestService;
@@ -95,6 +97,14 @@ public class TestController {
         return null;
     }
 
+    @RequestMapping(value = {"mybatis/list", "mybatis/list/{pageNum}/{pageSize}"}, method = RequestMethod.GET)
+    public List testList(@RequestBody Map param, @PathVariable(required = false) Integer pageNum, @PathVariable(required = false) Integer pageSize) {
+        String table = (String) param.get("table");
+        ExecutorInterceptor temp = SpringContext.getBean(ExecutorInterceptor.class);
+
+        return testService.list();
+    }
+
 
     @ApiOperation("查询列表")
     @RequestMapping(value = {"list", "list/{pageNum}/{pageSize}"}, method = RequestMethod.GET)
@@ -102,6 +112,7 @@ public class TestController {
         String table = (String) param.get("table");
 //        return testService.getMapper().listWithTable(table);
 //        return testService.listWithTable(table);
+        ExecutorInterceptor temp = SpringContext.getBean(ExecutorInterceptor.class);
         Page<Map> page;
         if (Objects.nonNull(pageNum) && Objects.nonNull(pageSize)) {
             page = new Page<>(pageNum, pageSize);
@@ -232,6 +243,7 @@ public class TestController {
     public boolean updateByIdWithTable(@RequestBody BaseVo baseVo) {
         try {
 //            return testService.getMapper().updateWithTable(baseVo.getTable(), baseVo.getParam());
+//            TUser bean = SpringContext.getBean(TUser.class);
             return testService.updateWithTable(baseVo.getTable(), baseVo.getParam());
         } catch (Exception e) {
             e.printStackTrace();
@@ -376,7 +388,5 @@ public class TestController {
         }
         return false;
     }
-
-
 
 }
