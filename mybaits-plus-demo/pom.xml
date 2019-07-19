@@ -17,6 +17,7 @@
     <properties>
         <java.version>1.8</java.version>
         <druid.version>1.1.9</druid.version>
+        <mybatisplus.version>3.1.2</mybatisplus.version>
     </properties>
 
     <dependencies>
@@ -67,12 +68,17 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.0.6</version>
+            <version>${mybatisplus.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus</artifactId>
+            <version>${mybatisplus.version}</version>
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-generator</artifactId>
-            <version>3.1.0</version>
+            <version>${mybatisplus.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.velocity</groupId>

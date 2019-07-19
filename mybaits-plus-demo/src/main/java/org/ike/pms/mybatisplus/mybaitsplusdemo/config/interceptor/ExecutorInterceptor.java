@@ -1,9 +1,10 @@
 package org.ike.pms.mybatisplus.mybaitsplusdemo.config.interceptor;
 
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
+import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.baomidou.mybatisplus.core.toolkit.TableInfoHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
@@ -16,6 +17,7 @@ import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
 import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
+import org.ike.pms.mybatisplus.mybaitsplusdemo.config.injector.WTSqlMethod;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,7 @@ public class ExecutorInterceptor implements Interceptor {
     public Object intercept(Invocation invocation) throws Throwable {
         log.info("ExecutorInterceptor.intercept");
         getCurrentSql(invocation);
+
         return invocation.proceed();
     }
 
@@ -52,32 +55,69 @@ public class ExecutorInterceptor implements Interceptor {
     private String getCurrentSql(Invocation invocation) {
         final Object[] args = invocation.getArgs();
         MappedStatement mappedStatement = (MappedStatement) args[0];
+        String statemenId = mappedStatement.getId();
+        String methodName = statemenId.substring(statemenId.lastIndexOf(Constants.DOT) + 1);
         Object parameters = args[1];
         Map map = (Map) parameters;
 //        map.put("table", "t_user");
-        Class<? extends Object> clazz = map.get("obj").getClass();
-        Object var1 = clazz.cast(map.get("obj"));
+        Class<? extends Object> clazz;
+        Object var1;
+        if (map!=null && !map.isEmpty() && map.containsKey(Constants.ENTITY)) {
+            clazz = map.get(Constants.ENTITY).getClass();
+            var1 = clazz.cast(map.get(Constants.ENTITY));
+            TableInfo tableInfo = TableInfoHelper.getTableInfo(clazz);
+            tableInfo.getFieldList().stream().filter(fieldInfo -> fieldInfo.getPropertyType().getName().contains("String") && "".equals(ReflectionKit.getMethodValue(clazz, var1, fieldInfo.getProperty()))).forEach(field -> {
+                try {
+                    clazz.getMethod(StringUtils.concatCapitalize("set", field.getProperty()), field.getPropertyType()).invoke(var1, new Object[]{null});
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
 
-        TableInfo tableInfo = TableInfoHelper.getTableInfo(clazz);
-
-        BoundSql boundSql = mappedStatement.getBoundSql(parameters);
+        BoundSql boundSql;
+        assert map != null;
+        if (WTSqlMethod.INSERT_ONE.getMethod().equals(methodName)) {
+            Object entity = map.get(Constants.ENTITY);
+            boundSql = mappedStatement.getBoundSql(entity);
+            args[1] = entity;
+        } else if (WTSqlMethod.DELETE_BY_ID.getMethod().equals(methodName) || WTSqlMethod.SELECT_BY_ID.getMethod().equals(methodName)) {
+            Object id = map.get("id");
+            boundSql = mappedStatement.getBoundSql(id);
+            args[1] = id;
+        } else {
+            boundSql = mappedStatement.getBoundSql(parameters);
+        }
         MappedStatement newMappedStatement = newMappedStatement(mappedStatement, new BoundSqlSource(boundSql));
-//        MetaObject metaObject = MetaObject.forObject(newMappedStatement, new DefaultObjectFactory(), new DefaultObjectWrapperFactory(), new DefaultReflectorFactory());
-//        String trimSql = trim(boundSql.getSql()).toUpperCase();
+        MetaObject metaObject = MetaObject.forObject(newMappedStatement, new DefaultObjectFactory(), new DefaultObjectWrapperFactory(), new DefaultReflectorFactory());
+        String trimSql = trim(boundSql.getSql());
+        if (StringUtils.isNotEmpty(statemenId) && statemenId.substring(statemenId.lastIndexOf(".")).contains("wt_")) {
+            trimSql = formatSql(trimSql, map);
+        }
+//        trimSql = trimSql.toUpperCase();
 //        String setSql = getSubUtil(trimSql, "SET(.*?)WHERE");
 //        StringBuilder fillSql = new StringBuilder();
 
-        tableInfo.getFieldList().stream().filter(fieldInfo -> fieldInfo.getPropertyType().getName().contains("String") && "".equals(ReflectionKit.getMethodValue(clazz, var1, fieldInfo.getProperty()))).forEach(field -> {
-            try {
-                clazz.getMethod(StringUtils.concatCapitalize("set", field.getProperty()), field.getPropertyType()).invoke(var1, new Object[]{null});
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-//        metaObject.setValue("sqlSource.boundSql.sql", trimSql.replace(setSql, setSql + fillSql.toString()));
+
+        metaObject.setValue("sqlSource.boundSql.sql", trimSql);
 //        map.put("obj", var1);
         args[0] = newMappedStatement;
+
         return null;
+    }
+
+    private String formatSql(String sql, Map params) {
+        String tableName;
+        if (params.isEmpty()) {
+            return sql;
+        }
+        if (params.containsKey("table")) {
+            tableName = (String) params.get("table");
+            if (StringUtils.isNotEmpty(tableName)) {
+                sql = String.format(sql, tableName);
+            }
+        }
+        return sql;
     }
 
     private MappedStatement newMappedStatement(MappedStatement ms, SqlSource newSqlSource) {

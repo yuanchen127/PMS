@@ -33,7 +33,6 @@ public class TUser implements Serializable {
     private String userId;
 
     @TableField("user_name")
-    @JsonProperty("userName")
     private String userName;
 
     @TableField("password")

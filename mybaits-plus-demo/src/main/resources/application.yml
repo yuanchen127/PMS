@@ -9,17 +9,11 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
 #    schema: classpath:db/schema-h2.sql
 #    data: classpath:db/data-h2.sql
-    db1:
-      url: jdbc:mysql://localhost:3306/pms?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&serverTimezone=UTC
-      username: root
-      password: 123456
-    db2:
-      url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&serverTimezone=UTC
-      username: root
-      password: 123456
+    url: jdbc:mysql://localhost:3306/pms?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&serverTimezone=UTC
+    username: root
+    password: 123456
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     key-generator: com.baomidou.mybatisplus.incrementer.OracleKeyGenerator
-

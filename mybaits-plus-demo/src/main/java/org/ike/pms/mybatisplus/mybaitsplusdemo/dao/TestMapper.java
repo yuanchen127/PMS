@@ -18,6 +18,7 @@ import java.util.Map;
 
 @Component
 public interface TestMapper extends WithTableMapper<TUser> {
+
     @SelectProvider(type = UserProvider.class, method = "selectProvider")
     Map test(QueryWrapper<TUser> wrapper);
 
@@ -56,5 +57,7 @@ public interface TestMapper extends WithTableMapper<TUser> {
 
     @SelectProvider(type = SqlProviderGenerator.class, method = "list")
     List<Map> ikeList(@Param("table") String table, @Param("ew") Wrapper<TUser> wrapper);
+
+    List<TUser> wtList(@Param(Constants.WRAPPER) Wrapper<TUser> queryWrapper);
 
 }

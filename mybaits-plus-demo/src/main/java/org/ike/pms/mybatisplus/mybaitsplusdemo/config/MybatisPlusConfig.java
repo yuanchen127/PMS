@@ -3,8 +3,6 @@ package org.ike.pms.mybatisplus.mybaitsplusdemo.config;
 import com.atomikos.icatch.jta.UserTransactionImp;
 import com.atomikos.icatch.jta.UserTransactionManager;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
-import com.baomidou.mybatisplus.core.injector.ISqlInjector;
-import com.baomidou.mybatisplus.extension.injector.LogicSqlInjector;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import org.apache.ibatis.plugin.Interceptor;
@@ -13,15 +11,15 @@ import org.apache.ibatis.type.JdbcType;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.config.MultiDatasource.DataSourceEnum;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.config.MultiDatasource.MultiDataSourceTransactionFactory;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.config.MultiDatasource.MultipleDataSource;
+import org.ike.pms.mybatisplus.mybaitsplusdemo.config.injector.WithTableInjector;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.config.interceptor.ExecutorInterceptor;
+import org.ike.pms.mybatisplus.mybaitsplusdemo.config.interceptor.StatementHandlerInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jta.atomikos.AtomikosDataSourceBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.transaction.jta.JtaTransactionManager;
@@ -39,6 +37,11 @@ public class MybatisPlusConfig {
     @Autowired
     private Environment env;
 
+//    @Bean
+    public StatementHandlerInterceptor statementHandlerInterceptor() {
+        return new StatementHandlerInterceptor();
+    }
+
     @Bean
     public ExecutorInterceptor executorInterceptor() {
         return new ExecutorInterceptor();
@@ -50,12 +53,14 @@ public class MybatisPlusConfig {
     }
 
     @Bean
-    public ISqlInjector iSqlInjector(){
-        return new LogicSqlInjector();
+    public WithTableInjector iSqlInjector(){
+        return new WithTableInjector();
     }
 
-    @Bean(name = "db1")
-    @ConfigurationProperties(prefix = "spring.datasource.db1" )
+
+
+//    @Bean(name = "db1")
+//    @ConfigurationProperties(prefix = "spring.datasource.db1" )
     public DataSource db1() {
         AtomikosDataSourceBean atomikosDataSourceBean = new AtomikosDataSourceBean();
         atomikosDataSourceBean.setXaDataSourceClassName("com.alibaba.druid.pool.xa.DruidXADataSource");
@@ -67,9 +72,9 @@ public class MybatisPlusConfig {
 //        return DruidDataSourceBuilder.create().build();
     }
 
-    @Bean(name = "db2")
-    @ConfigurationProperties(prefix = "spring.datasource.db2" )
-    @Primary
+//    @Bean(name = "db2")
+//    @ConfigurationProperties(prefix = "spring.datasource.db2" )
+//    @Primary
     public DataSource db2() {
         AtomikosDataSourceBean atomikosDataSourceBean = new AtomikosDataSourceBean();
         atomikosDataSourceBean.setXaDataSourceClassName("com.alibaba.druid.pool.xa.DruidXADataSource");
@@ -81,8 +86,8 @@ public class MybatisPlusConfig {
 //        return DruidDataSourceBuilder.create().build();
     }
 
-    @Autowired
-    @Bean
+//    @Autowired
+//    @Bean
 //    @Primary
     public DataSource multipleDataSource(@Qualifier("db1") DataSource db1, @Qualifier("db2") DataSource db2) {
         MultipleDataSource multipleDataSource = new MultipleDataSource();
@@ -96,30 +101,32 @@ public class MybatisPlusConfig {
         return multipleDataSource;
     }
 
-    @Bean(name = "transactionManager")
-    @Primary
+//    @Bean(name = "transactionManager")
+//    @Primary
     public JtaTransactionManager regTransactionManager () {
         UserTransactionManager userTransactionManager = new UserTransactionManager();
         UserTransaction userTransaction = new UserTransactionImp();
         return new JtaTransactionManager(userTransaction, userTransactionManager);
     }
 
-    @Bean("sqlsSessionFactory")
+//    @Bean("sqlsSessionFactory")
     public SqlSessionFactory sqlSessionFactory() throws Exception {
         MybatisSqlSessionFactoryBean sqlSessionFactory = new MybatisSqlSessionFactoryBean();
         sqlSessionFactory.setDataSource(multipleDataSource(db1(), db2()));
         sqlSessionFactory.setTransactionFactory(new MultiDataSourceTransactionFactory());
-        sqlSessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:org/ike/pms/mybatisplus/mybaitsplusdemo/dao/**/*Mapper.xml"));
+        sqlSessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:org/ike/pms/mybatisplus/mybaitsplusdemo/dao/**/*Mapper.java"));
 
         MybatisConfiguration configuration = new MybatisConfiguration();
         configuration.setJdbcTypeForNull(JdbcType.NULL);
         configuration.setMapUnderscoreToCamelCase(true);
         configuration.setLogImpl(org.apache.ibatis.logging.stdout.StdOutImpl.class);
         configuration.setCacheEnabled(false);
+
         sqlSessionFactory.setConfiguration(configuration);
         sqlSessionFactory.setPlugins(new Interceptor[]{ //PerformanceInterceptor(),OptimisticLockerInterceptor()
                 paginationInterceptor(), //添加分页功能
-                executorInterceptor()
+                executorInterceptor(),
+                statementHandlerInterceptor()
         });
 
         return sqlSessionFactory.getObject();

@@ -1,16 +1,16 @@
 package org.ike.pms.mybatisplus.mybaitsplusdemo.config.interceptor;
 
+import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.*;
+import org.apache.ibatis.session.ResultHandler;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Component;
 
 import java.util.Properties;
 
-@Intercepts({@Signature(
-        type= StatementHandler.class,
-        method = "query",
-        args = {MappedStatement.class,Object.class})})
+@Intercepts({@Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class})})
 @Component
 public class StatementHandlerInterceptor implements Interceptor {
     @Override

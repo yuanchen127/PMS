@@ -29,6 +29,12 @@ public class TestController {
     @Autowired
     private ITUserService itUserService;
 
+    @RequestMapping(value = "injector", method = RequestMethod.GET)
+    Integer testInjector() {
+        return testService.getMapper().deleteAll();
+    }
+
+
     @RequestMapping(value = "provider", method = RequestMethod.GET)
     List<TUser> test(@RequestBody Map params) {
 
@@ -108,7 +114,7 @@ public class TestController {
 
     @ApiOperation("查询列表")
     @RequestMapping(value = {"list", "list/{pageNum}/{pageSize}"}, method = RequestMethod.GET)
-    public Page<Map> list(@RequestBody Map param, @PathVariable(required = false) Integer pageNum, @PathVariable(required = false) Integer pageSize) {
+    public Page<TUser> list(@RequestBody Map param, @PathVariable(required = false) Integer pageNum, @PathVariable(required = false) Integer pageSize) {
         String table = (String) param.get("table");
 //        return testService.getMapper().listWithTable(table);
 //        return testService.listWithTable(table);
@@ -120,7 +126,10 @@ public class TestController {
             page = new Page<>();
         }
 
-        return testService.getMapper().listWithTable(page, table);
+//        return testService.getMapper().listWithTable(page, table);
+        QueryWrapper<TUser> wrapper = new QueryWrapper<>();
+        wrapper.eq("user_id", "3");
+        return new Page<TUser>().setRecords(testService.getMapper().wtList(wrapper));
     }
 
     @ApiOperation("按条件查询列表")
@@ -245,6 +254,7 @@ public class TestController {
 //            return testService.getMapper().updateWithTable(baseVo.getTable(), baseVo.getParam());
 //            TUser bean = SpringContext.getBean(TUser.class);
             return testService.updateWithTable(baseVo.getTable(), baseVo.getParam());
+//            return testService.saveOrUpdate(baseVo.getParam());
         } catch (Exception e) {
             e.printStackTrace();
         }

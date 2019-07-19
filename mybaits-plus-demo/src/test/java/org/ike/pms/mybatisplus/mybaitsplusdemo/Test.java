@@ -1,8 +1,6 @@
 package org.ike.pms.mybatisplus.mybaitsplusdemo;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.TableInfo;
-import com.baomidou.mybatisplus.core.toolkit.TableInfoHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.ike.pms.mybatisplus.mybaitsplusdemo.entity.TUser;
@@ -10,12 +8,9 @@ import org.ike.pms.mybatisplus.mybaitsplusdemo.entity.TUser;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -36,7 +31,6 @@ public class Test {
         log.info(wrapper.getCustomSqlSegment());
         log.info(wrapper.getSqlSelect());
         log.info(wrapper.getSqlSegment());
-        log.info(wrapper.getParamAlias());
         log.info(wrapper.getSqlSet());
         log.info("size {}",wrapper.getParamNameValuePairs());
     }
