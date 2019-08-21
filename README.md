@@ -6,3 +6,4 @@ pms-web --启动项目
 pms-auth  --系统权限
 pms-cache --系统缓存
 pms-orm --系统扩展orm
+pms-chart --图表、数据可视化
